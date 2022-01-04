@@ -7,7 +7,7 @@ function requestHandler(req, res) {
     
     if (url === "/") {
         res.write("<html>");
-        res.write("<head><title>Enter Message</title></head>");
+        res.write("<head><meta charset='UTF-8'><title>Enter Message</title></head>");
         res.write("<body><form action='/message' method='POST'><input type='text' name='message'/><input type='submit' value='send Message'/></form></body>")
         res.write("</html>")
         res.end();
@@ -20,15 +20,12 @@ function requestHandler(req, res) {
         });
         req.on('end', () => {
             const parsedBody = Buffer.concat(body).toString();
+            console.log(parsedBody)
             const message = parsedBody.split("=")[1].replace(/\++/g, " ");
-            writeFile('message.txt', `${message}\n`, {
-                flag: 'a'
-            }, (err, data) => {
+            writeFile('message.txt', `${message}\n`, { flag: 'a'}, (err, data) => {
                 if (err) console.log(err)
                 res.statusCode = 302;
-                res.writeHead(302, {
-                    'Location': '/'
-                });
+                res.writeHead(302, { 'Location': '/' });
                 res.end();
             });
         });
@@ -45,13 +42,13 @@ function requestHandler(req, res) {
 
 module.exports = requestHandler;
 
-module.exports = {
-    requestHandler,
-    someText: "Some text"
-};
+// module.exports = {
+//     requestHandler,
+//     someText: "Some text"
+// };
 
-module.exports.handler = requestHandler;
-module.exports.someText = 'Some Text';
+// module.exports.handler = requestHandler;
+// module.exports.someText = 'Some Text';
 
-exports.handler = requestHandler;
-exports.someText = 'Some Text';
+// exports.handler = requestHandler;
+// exports.someText = 'Some Text';

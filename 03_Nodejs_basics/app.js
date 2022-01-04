@@ -39,10 +39,10 @@
 //     const method = req.method;
 //     res.setHeader('Content-Type', 'text/html');
 //     if (url === "/") {
-//         res.write("<html>");
-//         res.write("<head><title>Enter Message</title></head>");
-//         res.write("<body><form action='/message' method='POST'><input type='text' name='message'/><input type='submit' value='send Message'/></form></body>")
-//         res.write("</html>")
+        // res.write("<html>");
+        // res.write("<head><title>Enter Message</title></head>");
+        // res.write("<body><form action='/message' method='POST'><input type='text' name='message'/><input type='submit' value='send Message'/></form></body>")
+        // res.write("</html>")
 //         res.end();
     
 //     } else if(url =='/message' && method === 'POST') {
@@ -102,11 +102,6 @@
 //         req.on('end', () => {
 //             const parsedBody = Buffer.concat(body).toString();
 //             const message = parsedBody.split("=")[1].replace(/\++/g, " ");
-
-//             // writeFileSync('message.txt', message, {flag: 'a'});
-//             // res.statusCode = 302;
-//             // res.writeHead(302, { 'Location': '/'});
-//             // res.end();
 
 //             writeFile('message.txt', `${message}\n`, {flag: 'a'}, (err, data) => {
 //                 if(err) console.log(err)
