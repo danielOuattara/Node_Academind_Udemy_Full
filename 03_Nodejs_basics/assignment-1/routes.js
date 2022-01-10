@@ -6,7 +6,6 @@
     const method = req.method;
     res.setHeader('Content-Type', 'text/html');
 
-
     if (url === '/') {
         res.writeHeader(200, {
             "Content-Type": "text/html; charset=utf-8"
