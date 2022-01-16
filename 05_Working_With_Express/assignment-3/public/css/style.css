@@ -1,0 +1,21 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1 {
+    margin: 2rem;
+    padding: 2rem;
+    border: 1px solid grey;
+    background-color: lightblue;
+}
+
+p {
+    margin: 1rem;
+    padding: 2rem;
+    border-bottom: 2px solid grey;
+    background-color: rgb(4, 85, 112);
+    color: #fff;
+}
