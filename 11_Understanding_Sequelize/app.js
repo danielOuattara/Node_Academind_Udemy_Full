@@ -10,6 +10,9 @@ const User = require('./models/user');
 const Cart = require('./models/cart');
 const CartItem = require('./models/cart-item');
 
+const Order = require('./models/order');
+const OrderItem = require('./models/order-item');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -36,54 +39,57 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-
 //----------------------------------
-User.hasMany(Product);
+User.hasMany(Product);  // seller
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE'});
 //----------------------------------
 User.hasOne(Cart);
 Cart.belongsTo(User);
 //----------------------------------
+// Many To Many
 Cart.belongsToMany(Product, {through: CartItem })
 Product.belongsToMany(Cart, {through: CartItem })
-
+//----------------------------------
+// One To Many
+User.hasMany(Order)
+Order.belongsTo(User);
+Order.belongsToMany(Product, { through: OrderItem})
 
 
 // app.listen(3000, () => {
 //     console.log('app is runnning on : http://localhost:3000/');
 //     sequelize.sync({/* force: true */})
-//     .then(() => User.findAll())
-//     .then( users => {
-//         if(users.length === 0) {
+//     .then(() => User.findByPk(1))
+//     .then( user => {
+//         if(!user) {
 //             // initializing users for development
-//                 return Promise.all ([
-//                 User.create({ name:"Daniel", email:"daniel@email.com"}),
-//                 User.create({ name:"Julie", email:"julie@email.com"}),
-//                 User.create({ name:"Gaïa", email:"gaia@email.com"}),
-//                 User.create({ name:"Amaya", email:"amaya@email.com"})
-//             ])
-//             .then(users => users.map((user) => {
-//                 return user.createCart()
-//             }))
+//             return User.create({ name:"Daniel", email:"daniel@email.com"})
+//             .then(user => user.createCart())
 //         }
-//         return users;
+//         return user;
 //     })
 //     .catch(err => console.log(err))
 // });
 
 
-
 app.listen(3000, () => {
     console.log('app is runnning on : http://localhost:3000/');
     sequelize.sync({/* force: true */})
-    .then(() => User.findByPk(1))
-    .then( user => {
-        if(!user) {
+    .then(() => User.findAll())
+    .then( users => {
+        if(users.length === 0) {
             // initializing users for development
-            return User.create({ name:"Daniel", email:"daniel@email.com"})
-            .then(user => user.createCart())
+                return Promise.all ([
+                    User.create({ name:"Daniel", email:"daniel@email.com"}),
+                    User.create({ name:"Julie", email:"julie@email.com"}),
+                    User.create({ name:"Gaïa", email:"gaia@email.com"}),
+                    User.create({ name:"Amaya", email:"amaya@email.com"})
+            ])
+            .then(users => users.map((user) => {
+                return user.createCart()
+            }))
         }
-        return user;
+        return users;
     })
     .catch(err => console.log(err))
 });

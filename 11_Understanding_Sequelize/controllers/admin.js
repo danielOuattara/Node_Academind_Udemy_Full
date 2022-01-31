@@ -11,14 +11,14 @@ exports.getAddProduct = (req, res, next) => {
 /* 
 exports.postAddProduct = (req, res, next) => {
   Product.create(req.body)
-  .then((result) => res.redirect("/").status(201).send("product successfully created"))
+  .then((result) => res.redirect("/"))
   .catch(err => console.log(err))
 }; 
 */
 
 exports.postAddProduct = (req, res, next) => {
   req.user.createProduct(req.body)
-  .then((result) => res.redirect("/").status(201).send("product successfully created"))
+  .then(() => res.redirect("/"))
   .catch(err => console.log(err))
 };
 
@@ -57,7 +57,7 @@ exports.getEditProduct = (req, res, next) => {
       path: '/admin/edit-product',
       editing: req.query.edit,
       product: products[0]
-    }).status(201).send('Product successfully updated !');
+    });
   })
   .catch(err => console.log(err))
 };
@@ -84,7 +84,7 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => { // get all product from a specific user
  req.user.getProducts()
-  .then(products => {
+  .then( products => {
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
@@ -96,7 +96,7 @@ exports.getProducts = (req, res, next) => { // get all product from a specific u
 
 exports.postDeleteProduct = (req, res, next) => {
   Product.destroy({where: {id:req.body.productId}})
-  .then(() => res.redirect('/admin/products').status(400).send('Product successfully deleted !'))
+  .then(() => res.redirect('/admin/products'))
   .catch(err => console.log(err))
   
 };
