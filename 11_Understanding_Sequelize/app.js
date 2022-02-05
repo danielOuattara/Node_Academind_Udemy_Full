@@ -3,7 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const errorController = require('./controllers/error');
-const sequelize = require('./utils/database');
+const  = require('./utils/database');
 
 const Product = require('./models/product');
 const User = require('./models/user');
@@ -58,7 +58,7 @@ Order.belongsToMany(Product, { through: OrderItem})
 
 // app.listen(3000, () => {
 //     console.log('app is runnning on : http://localhost:3000/');
-//     sequelize.sync({/* force: true */})
+//     .sync({/* force: true */})
 //     .then(() => User.findByPk(1))
 //     .then( user => {
 //         if(!user) {
@@ -74,7 +74,7 @@ Order.belongsToMany(Product, { through: OrderItem})
 
 app.listen(3000, () => {
     console.log('app is runnning on : http://localhost:3000/');
-    sequelize.sync({/* force: true */})
+    .sync({/* force: true */})
     .then(() => User.findAll())
     .then( users => {
         if(users.length === 0) {
