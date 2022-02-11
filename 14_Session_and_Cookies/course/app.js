@@ -63,6 +63,7 @@ const path = require('path');
 const express = require('express');
 const errorController = require('./controllers/error');
 const mongoose = require('mongoose');
+const session = require('express-session');
 const User = require('./models/user');
 const app = express();
 
@@ -72,17 +73,17 @@ const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(session({secret:'my_Secret', resave: false, saveUninitialized: false}));
 
 app.use((req, res, next) => {
   User.findById('620629680736ff7f92a2263a')
-  .then( user => {
-    req.user = user;
-    next();
-  })
-  .catch(err => console.log(err))
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err))
 })
 
 
@@ -99,22 +100,22 @@ const connectParams = { // not required on Mongoose v6
   useCreateIndex: true
 };
 mongoose.connect(process.env.MONGO_URI, connectParams)
-.then(() => {
-  User.findOne()
-  .then( user => {
-    if(!user) {
-      const user = new User({
-        name: "Daniel",
-        email: "daniel@email.com",
-        cart: {
-          items: []
+  .then(() => {
+    User.findOne()
+      .then(user => {
+        if (!user) {
+          const user = new User({
+            name: "Daniel",
+            email: "daniel@email.com",
+            cart: {
+              items: []
+            }
+          })
+          user.save()
         }
       })
-      user.save()
-    }
+      .catch(err => console.log(err))
+    console.log("Connected to  Database !")
+    app.listen(3000, () => console.log('App is running on port http://localhost:3000/'))
   })
   .catch(err => console.log(err))
-  console.log("Connected to  Database !")
-  app.listen(3000, () => console.log('App is running on port http://localhost:3000/'))
-})
-.catch(err => console.log(err))
