@@ -11,36 +11,37 @@ exports.getAddProduct = (req, res, next) => {
 
 //---------------------------------------------------------------
 exports.postAddProduct = (req, res, next) => {
-  const product = new Product(req.body);
+  const product = new Product({...req.body, userId: req.user._id});
+  console.log(product)
   product.save()
-  .then(() => res.redirect('/admin/products'))
-  .catch(err => console.log(err));
+    .then(() => res.redirect('/admin/products'))
+    .catch(err => console.log(err));
 };
 
-// //---------------------------------------------------------------
+//---------------------------------------------------------------
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
     return res.redirect('/');
   }
   Product.findById(req.params.productId)
-  .then(product => {
-    if (!product) {
-      return res.redirect('/');
-    }
-    res.render('admin/edit-product', {
-      pageTitle: 'Edit Product',
-      path: '/admin/edit-product',
-      editing: editMode,
-      product: product
-  });
-  })
-  .catch(err => console.log(err));
+    .then(product => {
+      if (!product) {
+        return res.redirect('/');
+      }
+      res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/admin/edit-product',
+        editing: editMode,
+        product: product
+    });
+    })
+    .catch(err => console.log(err));
 };
 
 // //---------------------------------------------------------------
 exports.postEditProduct = (req, res, next) => {
-  Product.findOneAndUpdate( { _id: req.body.productId }, req.body)
+  Product.findOneAndUpdate( { _id: req.body.productId, userId: req.user._id }, req.body )
   .then(() => res.redirect('/admin/products'))
   .catch(err => console.log(err));
 };
@@ -48,7 +49,10 @@ exports.postEditProduct = (req, res, next) => {
 // //---------------------------------------------------------------
 exports.getProducts = (req, res, next) => {
     Product.find({})
+    // .select('title price -_id')
+    // .populate('userId', 'name')
     .then(products => {
+      // console.log(products)
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
@@ -60,7 +64,7 @@ exports.getProducts = (req, res, next) => {
 
 // //---------------------------------------------------------------
 exports.postDeleteProduct = (req, res, next) => {
-  Product.deleteOne({_id:req.body.productId})
-  .then(() => res.redirect('/admin/products'))
-  .catch(err => console.log(err));
+  Product.findOneAndDelete({_id:req.body.productId, userId: req.user._id})
+    .then(() => res.redirect('/admin/products'))
+    .catch(err => res.send(`${err}`));
 };
