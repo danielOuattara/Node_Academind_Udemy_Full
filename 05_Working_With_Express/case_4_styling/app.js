@@ -8,11 +8,7 @@ const shopRoutes = require('./routes/shop');
 const errorRoutes = require('./routes/error.js');
 
 
-// app.use(bodyParser.urlencoded({extended: false}))
-
-app.use(express.static(__dirname + '/views'));
 app.use(express.urlencoded({ extended: false }));
-
 
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);

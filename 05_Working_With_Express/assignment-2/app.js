@@ -18,14 +18,11 @@ app.use('/user', (req, res, next) => {
     res.send("<h1>user route </h1>");
 });
 
+
 app.use('/',(req, res, next) => {
     console.log('user route');
     res.send("<h1>home route </h1>");
 });
-
-
-
-
 
 
 const PORT = 5500;

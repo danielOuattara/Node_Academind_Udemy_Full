@@ -4,12 +4,13 @@
 // const app  = express();
 // const server = http.createServer()
 
+
 // server.listen(5500, () => {
 //   console.log(`Server is running on port 5500`)
 // });
 
-//-----------------------------------------------------------------
 
+//-----------------------------------------------------------------
 
 // const http = require('http')
 // const express = require('express');
@@ -30,6 +31,8 @@
 // server.listen(5500, () => {
 //   console.log(`Server is running on port 5500`)
 // });
+
+
 //-----------------------------------------------------------------
 
 // const express = require('express');
@@ -52,6 +55,8 @@
 
 //-------------------------------------------------------------------
 
+/* handling different routes 
+-----------------------------*/
 
 // const express = require('express');
 // const app = express();
@@ -67,7 +72,7 @@
 // })
 
 // app.use('/product', (req, res, next) => {
-//     console.log(req.body);
+//     console.log("req.body = ", req.body);
 //     res.redirect('/');
 // });
 
@@ -83,11 +88,14 @@
 
 //-------------------------------------------------------------------
 
+/* handle response 
+--------------------*/
+
 // const express = require('express');
 // const app = express();
-// const bodyParser = require('body-parser');
+//const bodyParser = require('body-parser');
 
-// // app.use(bodyParser.urlencoded({extended: false}))
+// app.use(bodyParser.urlencoded({extended: false}))
 // app.use(express.urlencoded({ extended: false }));
 
 
@@ -116,6 +124,9 @@
 // });
 
 //-------------------------------------------------------------------
+
+/* limit request to POST 
+------------------------ */
 
 // const express = require('express');
 // const app = express();
@@ -151,24 +162,6 @@
 
 //-------------------------------------------------------------------
 
-// Using Express Router
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const adminRoutes = require('./routes/admin')
-const shopRoutes = require('./routes/shop');
-const errorRoutes = require('./routes/error.js');
-// app.use(bodyParser.urlencoded({extended: false}))
-app.use(express.urlencoded({ extended: false }));
+/* Using Express Router  : Next
+-------------------------*/
 
-
-app.use(adminRoutes);
-app.use(shopRoutes);
-app.use(errorRoutes);
-
-
-app.listen(5500, () => {
-    console.log(`Server is running on port 5500`);
-});
-
-//-------------------------------------------------------------------
