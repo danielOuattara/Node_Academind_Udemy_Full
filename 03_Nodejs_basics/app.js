@@ -10,6 +10,7 @@
 //     console.log(`Server is running on port ${PORT}`)
 // });
 
+
 //------------------------------------------------------------
 
 // const http = require('http');
@@ -35,17 +36,23 @@
 // const { writeFileSync } = require ('fs')
 
 // const server = http.createServer((req, res) => {
-//     const url = req.url;
 //     const method = req.method;
 //     res.setHeader('Content-Type', 'text/html');
-//     if (url === "/") {
-        // res.write("<html>");
-        // res.write("<head><title>Enter Message</title></head>");
-        // res.write("<body><form action='/message' method='POST'><input type='text' name='message'/><input type='submit' value='send Message'/></form></body>")
-        // res.write("</html>")
+//     if (req.url === "/") {
+//         res.write("<html>");
+//         res.write("<head><title>Enter Message</title></head>");
+//         res.write(`
+//             <body>
+//                 <form action='/message' method='POST'>
+//                     <input type='text' name='message'/>
+//                     <input type='submit' value='send Message'/>
+//                 </form>
+//             </body>`
+//         )
+//         res.write("</html>")
 //         res.end();
     
-//     } else if(url =='/message' && method === 'POST') {
+//     } else if(req.url =='/message' && method === 'POST') {
 //         const body = [];
 //         req.on('data', (chunk) => {
 //             console.log("chunk ==", chunk)
@@ -54,7 +61,7 @@
 //         req.on('end', () => {
 //             const parsedBody = Buffer.concat(body).toString();
 //             const message = parsedBody.split("=")[1].replace(/\++/g, " ");
-//             writeFileSync('message.txt', message, {flag: 'a'});
+//             writeFileSync('message.txt', `\n${message}`, {flag: 'a'});
 //             res.statusCode = 302;
 //             res.writeHead(302, { 'Location': '/'});
 //             res.end();
@@ -80,7 +87,7 @@
 ---------------- */
 
 // const http = require('http');
-// const { writeFile } = require ('fs')
+// const { writeFile } = require ('fs');
 
 // const server = http.createServer((req, res) => {
 //     const url = req.url;
@@ -102,9 +109,8 @@
 //         req.on('end', () => {
 //             const parsedBody = Buffer.concat(body).toString();
 //             const message = parsedBody.split("=")[1].replace(/\++/g, " ");
-
-//             writeFile('message.txt', `${message}\n`, {flag: 'a'}, (err, data) => {
-//                 if(err) console.log(err)
+//             writeFile('message.txt', `${message}\n`, {flag: 'a'}, (err) => {
+//                 if(err) console.log(err);
 //                 res.statusCode = 302;
 //                 res.writeHead(302, { 'Location': '/'});
 //                 res.end();
@@ -126,7 +132,7 @@
 //     console.log(`Server is running on port ${PORT}`)
 // });
 
-
+//-------------------------------------------------------------------
 
 const http = require('http');
 const requestHandler = require('./routes')

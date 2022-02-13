@@ -1,18 +1,17 @@
 const { writeFile } = require ('fs');
 
 function requestHandler(req, res) {
-    const url = req.url;
     const method = req.method;
     res.setHeader('Content-Type', 'text/html');
     
-    if (url === "/") {
+    if (req.url === "/") {
         res.write("<html>");
         res.write("<head><meta charset='UTF-8'><title>Enter Message</title></head>");
         res.write("<body><form action='/message' method='POST'><input type='text' name='message'/><input type='submit' value='send Message'/></form></body>")
         res.write("</html>")
         res.end();
     
-    } else if (url == '/message' && method === 'POST') {
+    } else if (req.url == '/message' && method === 'POST') {
         const body = [];
         req.on('data', (chunk) => {
             console.log("chunk ==", chunk)
@@ -41,6 +40,7 @@ function requestHandler(req, res) {
 }
 
 module.exports = requestHandler;
+
 
 // module.exports = {
 //     requestHandler,
