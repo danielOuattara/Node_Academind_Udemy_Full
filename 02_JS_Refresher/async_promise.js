@@ -1,3 +1,19 @@
+const fetchInfo = callback => {
+    setTimeout(() => {
+        callback('Done!')
+    })
+}
+
+setTimeout(() => {
+    console.log('Timer Zero');
+    fetchInfo(data => {
+        console.log(data)
+    })
+})
+
+
+//-------------------------------------------------------------
+
 const fetchData = () => {
     const promise = new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -22,17 +38,17 @@ const fetchDataError = () => {
 setTimeout(() => {
     console.log('Timer is done!');
     fetchData()
-    .then(text => {
-        console.log(text);
-        return fetchData();
-    })
-    .then(text2 => {
-        console.log(text2);
-    });
+        .then(text => {
+            console.log(text);
+            return fetchData();
+        })
+        .then(text2 => {
+            console.log(text2);
+        });
 
     fetchDataError()
-    .then(text =>console.log(text))
-    .catch(err => console.log(err))
+        .then(text => console.log(text))
+        .catch(err => console.log(err))
 }, 2000);
 
 console.log('Hello!');
