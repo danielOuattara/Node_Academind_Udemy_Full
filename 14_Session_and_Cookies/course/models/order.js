@@ -20,6 +20,11 @@ const orderSchema = new Schema({
       ref: 'User'
     }
   }
+},
+
+{
+    timestamps: true,
+    toJSON: {virtuals: true}
 });
 
 module.exports = mongoose.model('Order', orderSchema);
