@@ -1,8 +1,7 @@
 const db = require('./../utils/database');
 
 module.exports = class Product {
-  constructor( id, title, imageUrl, description, price) {
-    this.id = id;
+  constructor( title, imageUrl, description, price) {
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -11,16 +10,17 @@ module.exports = class Product {
 
   save() {
     return db.execute(
-      'INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?)', [this.title, this.price, this.description, this.imageUrl]
+      'INSERT INTO products (title, price, description, imageUrl) VALUES (?, ?, ?, ?)', 
+      [this.title, this.price, this.description, this.imageUrl]
     );
   }
 
   static deleteById(id) {
-
+    return db.execute('DELETE FROM `academind_node_express_udemy_mysql`.`products` WHERE `id` = ?',[id]);
   }
 
   static fetchAll() {
-    return db.execute('SELECT * FROM products')
+    return db.execute('SELECT * FROM products');
   }
 
   static findById(id) {
