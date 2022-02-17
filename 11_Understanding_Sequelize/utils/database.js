@@ -12,15 +12,19 @@
 //----------------------------------------------------------
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('academind_node_express_udemy', 'root', '1_superPassword!', {
-    host: 'localhost',
-    dialect: 'mysql',
-    pool: {
-        max: 5,
-        min: 0,
-        acquire: 30000,
-        idle: 10000
-    }
+const sequelize = new Sequelize(
+    process.env.DATABASE, 
+    process.env.USER, 
+    process.env.PSWD, 
+    {
+        dialect: 'mysql',
+        host: 'localhost',
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        }
 });
 
 
