@@ -8,7 +8,7 @@
     "start": "nodemon app.js",
     "start-server": "node app.js"
   },
-  "author": "Maximilian Schwarzmüller",
+  "author": "daniel.ouattara@gmx.com - following Maximilian Schwarzmüller course on Udemy",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^1.18.3"
