@@ -1,6 +1,6 @@
 const Product = require('./../models/product');
 
-// //---------------------------------------------------------------
+//---------------------------------------------------------------
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
@@ -12,7 +12,6 @@ exports.getAddProduct = (req, res, next) => {
 //---------------------------------------------------------------
 exports.postAddProduct = (req, res, next) => {
   const product = new Product({...req.body, userId: req.user._id});
-  console.log(product)
   product.save()
     .then(() => res.redirect('/admin/products'))
     .catch(err => console.log(err));
@@ -39,14 +38,17 @@ exports.getEditProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-// //---------------------------------------------------------------
+//---------------------------------------------------------------
 exports.postEditProduct = (req, res, next) => {
-  Product.findOneAndUpdate( { _id: req.body.productId, userId: req.user._id }, req.body )
-  .then(() => res.redirect('/admin/products'))
-  .catch(err => console.log(err));
+  Product.findOneAndUpdate( 
+    { _id: req.body.productId, userId: req.user._id },
+     req.body 
+  )
+    .then(() => res.redirect('/admin/products'))
+    .catch(err => console.log(err));
 };
 
-// //---------------------------------------------------------------
+//---------------------------------------------------------------
 exports.getProducts = (req, res, next) => {
     Product.find({})
     // .select('title price -_id')
@@ -62,9 +64,9 @@ exports.getProducts = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
-// //---------------------------------------------------------------
+//---------------------------------------------------------------
 exports.postDeleteProduct = (req, res, next) => {
   Product.findOneAndDelete({_id:req.body.productId, userId: req.user._id})
     .then(() => res.redirect('/admin/products'))
-    .catch(err => res.send(`${err}`));
+    .catch(err => console.log(err));
 };

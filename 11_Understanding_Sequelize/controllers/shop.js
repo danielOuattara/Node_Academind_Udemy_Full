@@ -105,11 +105,11 @@ exports.postCart = (req, res, next) => {  // method 2
   let fetchedCart;
   let newQuantity = 1;
   req.user.getCart()
-    .then(cart => {
+    .then( cart => {
       fetchedCart = cart;
       return cart.getProducts({where: {id: req.body.productId}})
     })
-    .then(products => {
+    .then( products => {
       let product;
       if(products.length > 0) {  // product exits in cart, so increase its quantity
         product = products[0];  
@@ -118,7 +118,7 @@ exports.postCart = (req, res, next) => {  // method 2
       }
       return Product.findByPk(req.body.productId)
     })
-    .then(product => { // method 2
+    .then( product => { // method 2
       return fetchedCart.addProduct(product, { through: { quantity: newQuantity} })
     })
     .then(() => res.redirect('/cart'))

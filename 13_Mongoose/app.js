@@ -16,9 +16,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use((req, res, next) => {
-  User.findById('620629680736ff7f92a2263a')
+  User.findById('6208db9bad6fc9fa11177cbc')
   .then( user => {
-    req.user = user;
+    req.user = user; // here user is a full mongoose model: with all method and properties
     next();
   })
   .catch(err => console.log(err))
@@ -48,7 +48,7 @@ mongoose.connect(process.env.MONGO_URI)
     }
   })
   .catch(err => console.log(err))
-  console.log("Connected to  Database !")
+  console.log("Connected to MongoDB Database: success !")
   app.listen(3000, () => console.log('App is running on port http://localhost:3000/'))
 })
 .catch(err => console.log(err))
