@@ -1,18 +1,23 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
-const errorController = require('./controllers/error');
 const mongoose = require('mongoose');
-const User = require('./models/user');
+const errorController = require('./controllers/error');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const isAuth = require('./middlewares/isAuth')
+const isAuth = require('./middlewares/isAuth');
+const csrf = require('csurf')
+const User = require('./models/user');
+const flash = require('connect-flash');
 
 const app = express();
+
 const store = new MongoDBStore({
   uri: process.env.MONGO_URI,
   collection: 'sessions'
 })
+
+const csrfProtection = csrf();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -28,6 +33,27 @@ app.use(session({
   resave: false, saveUninitialized: false,
   store: store
 }))
+
+app.use(csrfProtection);
+app.use(flash())
+
+app.use((req, res, next) => {
+  if(!req.session.user) {
+    return next()
+  }
+  User.findById(req.session.user._id)
+  .then( user => {
+    req.user = user; // here user is a full mongoose model: with all method and properties
+    next();
+  })
+  .catch(err => console.log(err))
+})
+
+app.use((req, res, next) => {  // globally send some required data, readbelow to know witch is send !
+  res.locals.isAuthenticated = req.session.isLoggedIn
+  res.locals.csrfToken = req.csrfToken();
+  next();
+})
 
 app.use('/admin', isAuth, adminRoutes);
 app.use(authRoutes);

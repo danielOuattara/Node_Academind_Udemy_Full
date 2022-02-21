@@ -1,16 +1,20 @@
 const User = require('./../models/user');
 const bcryptjs = require('bcryptjs');
-//---------------------------------------------------------------
 
-/* session authentication 
----------------------------- */
+
 
 //------------------------------------------------------------------
 exports.getSignup = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render('auth/signup', {
     pageTitle: 'signup Page',
     path: '/signup',
-    isAuthenticated: req.session.isLoggedIn
+    errorMessage: message
   });
 };
 
@@ -19,6 +23,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then( userExist => {
       if(userExist) { //  ERROR: email is already used ! 
+        req.flash('error', 'E-Mail exists already, please pick a different one.');
         return res.redirect('/signup');
       } 
       bcryptjs.hash(req.body.password, 11)
@@ -30,7 +35,7 @@ exports.postSignup = (req, res, next) => {
         });
         return user.save()
       })
-      .then( user => {
+      .then( () => {
         res.redirect('/login')
       })
     })
@@ -40,10 +45,16 @@ exports.postSignup = (req, res, next) => {
 
 //------------------------------------------------------------------
 exports.getLogin = (req, res, next) => {
+  let message = req.flash('error');
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render('auth/login', {
     pageTitle: 'Login Page',
     path: '/login',
-    isAuthenticated: req.session.isLoggedIn
+    errorMessage: message
   });
 };
 
@@ -52,12 +63,14 @@ exports.postLogin = (req, res, next) => {
   User.findOne({email: req.body.email})
     .then( user => {
       if(!user) {  // user not found in DB
+        req.flash('ErrorLogin','Invalid email OR password')
         return res.redirect('/login');
       }
 
       bcryptjs.compare(req.body.password, user.password)
       .then( doMatch => {
         if(!doMatch) {
+          req.flash('ErrorLogin','Invalid email OR password')
           return res.redirect('/login');
         }
         

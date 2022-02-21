@@ -23,7 +23,8 @@ exports.getProducts = (req, res, next) => {
         res.render('shop/index', {
           prods: products,
           pageTitle: 'Shop',
-          path: '/'
+          path: '/',
+          _s_surf:  req.crsfToken()
         });
       })
       .catch(err => {
