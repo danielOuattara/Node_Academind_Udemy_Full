@@ -1,0 +1,3 @@
+
+- using sendGrid as email server
+- install 'nodemailer' & 'nodemailer-sendgrid-transport'
