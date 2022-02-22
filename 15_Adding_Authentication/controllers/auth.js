@@ -1,8 +1,6 @@
 const User = require('./../models/user');
 const bcryptjs = require('bcryptjs');
 
-
-
 //------------------------------------------------------------------
 exports.getSignup = (req, res, next) => {
   let message = req.flash('error');
@@ -26,6 +24,7 @@ exports.postSignup = (req, res, next) => {
         req.flash('error', 'E-Mail exists already, please pick a different one.');
         return res.redirect('/signup');
       } 
+      
       bcryptjs.hash(req.body.password, 11)
       .then( hashedPassword => {
         const user = new User({

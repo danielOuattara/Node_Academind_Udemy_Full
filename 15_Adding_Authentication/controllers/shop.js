@@ -24,6 +24,8 @@ exports.getProducts = (req, res, next) => {
           prods: products,
           pageTitle: 'Shop',
           path: '/',
+          // isAuthenticated: req.session.isLoggedIn,  /* Replaced by app.js 53-55 */
+          // csrfToken: req.csrf()
 
         });
       })
@@ -88,7 +90,6 @@ exports.postCartDeleteProduct = (req, res, next) => {
 //---------------------------------------------------------------
 
  exports.postOrder = (req, res ,next) => {
-  
   req.user.populate('cart.items.productId')
     .then( user => {
       const products = user.cart.items.map( item => {
@@ -104,7 +105,6 @@ exports.postCartDeleteProduct = (req, res, next) => {
         },
         products,
       });
-      console.log("orders ----------->>>>>>   ", orders)
       return orders.save();
     })
     .then(() => {

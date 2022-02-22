@@ -17,7 +17,7 @@ const store = new MongoDBStore({
   collection: 'sessions'
 })
 
-const csrfProtection = csrf();
+const csrfProtection = csrf({});  // creating the middleware protection
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -30,11 +30,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
   secret:"my secret string", 
-  resave: false, saveUninitialized: false,
+  resave: false, 
+  saveUninitialized: false,
   store: store
 }))
 
-app.use(csrfProtection);
+app.use(csrfProtection);  // using the middleware protection, must be placed after a session
 app.use(flash())
 
 app.use((req, res, next) => {
@@ -49,7 +50,7 @@ app.use((req, res, next) => {
   .catch(err => console.log(err))
 })
 
-app.use((req, res, next) => {  // globally send some required data, readbelow to know witch is send !
+app.use((req, res, next) => {  // globally send some required data, read in to know witch is send !
   res.locals.isAuthenticated = req.session.isLoggedIn
   res.locals.csrfToken = req.csrfToken();
   next();
