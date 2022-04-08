@@ -1,0 +1,6 @@
+- resetting password
+- add a reset password link in 'login' page
+- set up a rest page = a form with a field for email entry
+- idea = user may reset password by sending an email
+- the backend check the email, and confirm 
+- using 'crypto' module
