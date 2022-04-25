@@ -8,12 +8,12 @@ const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 app.use((req, res, next) => {
   User.findById('6208db9bad6fc9fa11177cbc')
@@ -24,13 +24,10 @@ app.use((req, res, next) => {
   .catch(err => console.log(err))
 })
 
-
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-
 app.use(errorController.get404);
-
 
 mongoose.connect(process.env.MONGO_URI)
 .then(() => {
