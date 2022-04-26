@@ -24,7 +24,6 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        // _s_surf: req.crsfToken(), // ?????
       });
     })
     .catch((err) => {
