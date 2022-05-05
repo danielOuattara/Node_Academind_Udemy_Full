@@ -1,23 +1,17 @@
 require("dotenv").config();
 const path = require("path");
 const express = require("express");
-const mongoose = require("mongoose");
 const errorController = require("./controllers/error");
+const mongoose = require("mongoose");
+const User = require("./models/user");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
-const isAuth = require("./middlewares/isAuth");
-const csrf = require("csurf");
-const User = require("./models/user");
-const flash = require("connect-flash");
 
 const app = express();
-
 const store = new MongoDBStore({
   uri: process.env.MONGO_URI,
   collection: "sessions",
 });
-
-const csrfProtection = csrf({}); // creating the middleware protection
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -33,17 +27,16 @@ app.use(
     secret: "my secret string",
     resave: false,
     saveUninitialized: false,
+    // cookie config here also...
     store: store,
   })
 );
-
-app.use(csrfProtection); // using the middleware protection, must be placed after a session
-app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
+  console.log(req.session);
   User.findById(req.session.user._id)
     .then((user) => {
       req.user = user; // here user is a full mongoose model: with all method and properties
@@ -52,14 +45,8 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
-app.use((req, res, next) => {
-  // globally send some required data, read in to know witch is send !
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
-});
 
-app.use("/admin", isAuth, adminRoutes);
+app.use("/admin", adminRoutes);
 app.use(authRoutes);
 app.use(shopRoutes);
 
@@ -68,6 +55,20 @@ app.use(errorController.get404);
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
+    User.findOne()
+      .then((user) => {
+        if (!user) {
+          const user = new User({
+            name: "Daniel",
+            email: "daniel@email.com",
+            cart: {
+              items: [],
+            },
+          });
+          user.save();
+        }
+      })
+      .catch((err) => console.log(err));
     console.log("Connected to MongoDB Database: success !");
     app.listen(3000, () =>
       console.log("App is running on port http://localhost:3000/")

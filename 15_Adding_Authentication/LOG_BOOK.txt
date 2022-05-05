@@ -1,6 +1,8 @@
 
 - adding auth (signup & login) throw express-session and using mongodb-connect-session
 - adding routes protection, access for only 'connected' AND 'authorized' user
-- installing 'csurf' to generate csrf-token for any page that send sensitive data
+- CSRF attack : to steal your session id and use it
+- installing 'csurf' to generate csrf-token for any page that send sensitive data. session ids
+  are then garanteed to be valable only in your authentic view, not on hackers ones
 - serving required csfr token and other resquired data globally using 'res.locals' [ app.js 50-55]
 - providing quick user feedback (not validation, to be done later) 
