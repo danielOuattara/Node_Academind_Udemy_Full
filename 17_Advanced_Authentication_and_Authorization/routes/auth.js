@@ -1,21 +1,18 @@
-
-const express = require('express');
-const authController = require('./../controllers/auth');
+const express = require("express");
+const authController = require("./../controllers/auth");
 const router = express.Router();
 
+router.get("/login", authController.getLogin);
+router.post("/login", authController.postLogin);
+router.post("/logout", authController.postLogout);
 
-router.get('/login', authController.getLogin);
-router.post('/login', authController.postLogin);
-router.post('/logout', authController.postLogout);
+router.get("/signup", authController.getSignup);
+router.post("/signup", authController.postSignup);
 
-router.get('/signup', authController.getSignup);
-router.post('/signup', authController.postSignup);
+router.get("/reset", authController.getResetPassword);
+router.post("/reset", authController.postResetPassword);
 
-router.get('/resetpassword', authController.getResetPassword);
-router.post('/resetpassword', authController.postResetPassword);
-
-router.get('/newpassword', authController.getRenewPassword);
-router.post('/newpassword/:token', authController.postRenewPassword);
-
+router.get("/reset/:token", authController.getRenewPassword);
+router.post("/newpwd", authController.postRenewPassword);
 
 module.exports = router;
