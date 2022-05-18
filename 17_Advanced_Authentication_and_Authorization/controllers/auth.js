@@ -1,16 +1,15 @@
-
 const crypto = require("crypto"); // Node.js native module
 const User = require("./../models/user");
 const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "mail.gmx.com",
+  host: process.env.HOST,
   port: 465,
   secure: true,
   auth: {
-    user: process.env.EMAIL ,
-    pass: process.env.PSWD,
+    user: process.env.ADMIN_EMAIL,
+    pass: process.env.ADMIN_PSWD,
   },
 });
 
@@ -53,16 +52,9 @@ exports.postSignup = (req, res, next) => {
           return user.save();
         })
         .then(() => {
-          transporter.sendMail({
-            to: req.body.email,
-            from: "from_me@gmail.com",
-            subject: "Signup successfulll !",
-            html: "<h1>You succefully signed up !</h1>",
-          });
-          res.redirect("/login");
           return transporter.sendMail(
             {
-              from: "daniel.ouattara@gmx.com",
+              from: process.env.ADMIN_EMAIL,
               to: req.body.email,
               subject: "Signup Successfull",
               html: `<h1> Signup Successfull!
@@ -187,7 +179,7 @@ exports.postResetPassword = (req, res, next) => {
           res.redirect("/login");
           return transporter.sendMail(
             {
-              from: "daniel.ouattara@gmx.com",
+              from: process.env.ADMIN_EMAIL,
               to: req.body.email,
               subject: "Password reset !",
               html: `
@@ -257,7 +249,8 @@ exports.postRenewPassword = (req, res, next) => {
         return res.redirect("/login");
       }
 
-      bcryptjs.hash(req.body.password, 11)
+      bcryptjs
+        .hash(req.body.password, 11)
         .then((hash) => {
           user.password = hash;
           user.resetPasswordToken = undefined;
@@ -270,7 +263,7 @@ exports.postRenewPassword = (req, res, next) => {
 
           return transporter.sendMail(
             {
-              from: "daniel.ouattara@gmx.com",
+              from: process.env.ADMIN_EMAIL,
               to: user.email,
               subject: "Password reset !",
               html: `
@@ -293,5 +286,3 @@ exports.postRenewPassword = (req, res, next) => {
     })
     .catch((err) => console.log(err));
 };
-
-
