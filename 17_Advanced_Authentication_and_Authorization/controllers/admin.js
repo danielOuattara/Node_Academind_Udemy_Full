@@ -14,7 +14,10 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product({...req.body, userId: req.user._id});
   product.save()
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err =>  {
+      console.log(err)
+      res.redirect('/')
+    });
 };
 
 //---------------------------------------------------------------
@@ -45,7 +48,10 @@ exports.postEditProduct = (req, res, next) => {
      req.body 
   )
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err =>  {
+      console.log(err)
+      res.redirect('/')
+    });
 };
 
 //---------------------------------------------------------------
@@ -68,5 +74,8 @@ exports.getProducts = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   Product.findOneAndDelete({_id:req.body.productId, userId: req.user._id})
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err =>  {
+      console.log(err)
+      res.redirect('/')
+    });
 };
