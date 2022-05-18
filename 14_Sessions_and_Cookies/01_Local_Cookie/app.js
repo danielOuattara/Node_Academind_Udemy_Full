@@ -32,8 +32,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     User.findOne()
       .then((user) => {
