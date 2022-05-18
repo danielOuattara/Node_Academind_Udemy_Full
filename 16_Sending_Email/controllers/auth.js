@@ -1,14 +1,15 @@
+const crypto = require("crypto"); // Node.js native module
 const User = require("./../models/user");
 const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "mail.gmx.com",
+  host: process.env.HOST,
   port: 465,
   secure: true,
   auth: {
-    user: "daniel.ouattara@gmx.com",
-    pass: "**Bravo15**",
+    user: process.env.ADMIN_EMAIL,
+    pass: process.env.ADMIN_PSWD,
   },
 });
 
@@ -51,10 +52,9 @@ exports.postSignup = (req, res, next) => {
           return user.save();
         })
         .then(() => {
-          res.redirect("/login");
           return transporter.sendMail(
             {
-              from: "daniel.ouattara@gmx.com",
+              from: process.env.ADMIN_EMAIL,
               to: req.body.email,
               subject: "Signup Successfull",
               html: `<h1> Signup Successfull!
@@ -95,7 +95,7 @@ exports.postLogin = (req, res, next) => {
     .then((user) => {
       if (!user) {
         // user not found in DB
-        req.flash("ErrorLogin", "Invalid email OR password");
+        req.flash("error", "Invalid email OR password");
         return res.redirect("/login");
       }
 
@@ -131,3 +131,79 @@ exports.postLogout = (req, res, next) => {
     res.redirect("/");
   });
 };
+
+//------------------------------------------------------------------
+exports.getResetPassword = (req, res, next) => {
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
+  res.render("auth/resetPassword", {
+    pageTitle: "Reset Password",
+    path: "/reset",
+    errorMessage: message,
+  });
+};
+
+//------------------------------------------------------------------
+exports.postResetPassword = (req, res, next) => {
+  if (!req.body.email) {
+    // check email provided !
+    req.flash("error", "Invalid email OR password");
+    return res.redirect("/login");
+  }
+
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      if (!user) {
+        // user not found in DB
+        req.flash("error", "Invalid email OR password");
+        return res.redirect("/login");
+      }
+
+      crypto.randomBytes(16, (err, buffer) => {
+        // generate a Token
+        if (err) {
+          req.flash("error", "Invalid email OR password");
+          console.log(err);
+          return res.redirect("/reset");
+        }
+        const token = buffer.toString("hex");
+        user.resetPasswordToken = token;
+        const limitTime = 10; // minutes
+        user.resetPasswordTokenExpiration = Date.now() + limitTime * 60 * 1000;
+        user.save().then(() => {
+          res.redirect("/login");
+          return transporter.sendMail(
+            {
+              from: process.env.ADMIN_EMAIL,
+              to: req.body.email,
+              subject: "Password reset !",
+              html: `
+            <h1> Password Reset !
+            Welcome ${req.body.email} </h1>
+            <p>You request a password rest</p>
+            <p>Click <a href="http://localhost:3000/reset/${token}">Reset Password</a> to reset your password</p>
+            <p>You have ${limitTime} minutes to reset your password.</p>
+            <p>Thank you.</p>`,
+            },
+            function (error, info) {
+              if (error) {
+                console.log("EMAIL ERROR", error);
+              } else {
+                console.log("Email sent: " + info.response);
+              }
+            }
+          );
+        });
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+//------------------------------------------------------------------
+
