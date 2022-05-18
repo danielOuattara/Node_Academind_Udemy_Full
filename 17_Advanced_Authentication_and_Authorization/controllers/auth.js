@@ -41,8 +41,7 @@ exports.postSignup = (req, res, next) => {
         return res.redirect("/signup");
       }
 
-      bcryptjs
-        .hash(req.body.password, 11)
+      bcryptjs.hash(req.body.password, 11)
         .then((hashedPassword) => {
           const user = new User({
             email: req.body.email,
@@ -52,6 +51,7 @@ exports.postSignup = (req, res, next) => {
           return user.save();
         })
         .then(() => {
+          res.redirect("/login")
           return transporter.sendMail(
             {
               from: process.env.ADMIN_EMAIL,
