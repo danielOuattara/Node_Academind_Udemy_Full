@@ -105,7 +105,6 @@ exports.getLogin = (req, res, next) => {
     errorMessage: message,
     userInputs: {
       email: "",
-      // password: "",
     },
     validationsErrorsArray: [],
   });
@@ -127,7 +126,6 @@ exports.postLogin = (req, res, next) => {
       errorMessage: errors.array()[0].msg,
       userInputs: {
         email: req.body.email,
-        // password: req.body.password,
       },
       validationsErrorsArray: errors.array(),
     });
