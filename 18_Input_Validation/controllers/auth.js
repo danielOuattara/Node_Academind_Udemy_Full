@@ -26,6 +26,11 @@ exports.getSignup = (req, res, next) => {
     pageTitle: "signup Page",
     path: "/signup",
     errorMessage: message,
+    userInputs: {
+      email: "",
+      // password: "",
+      // passwordConfirmation: "",
+    },
   });
 };
 
@@ -43,6 +48,11 @@ exports.postSignup = (req, res, next) => {
       path: "/signup",
       pageTitle: "SignUp",
       errorMessage: errors.array()[0].msg,
+      userInputs: {
+        email: req.body.email,
+        // password: req.body.password,
+        // passwordConfirmation: req.body.passwordConfirmation,
+      },
     });
   }
 
