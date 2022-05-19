@@ -31,6 +31,7 @@ exports.getSignup = (req, res, next) => {
       // password: "",
       // passwordConfirmation: "",
     },
+    validationsErrorsArray: [],
   });
 };
 
@@ -43,6 +44,7 @@ exports.postSignup = (req, res, next) => {
   */
 
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(422).render("auth/signup", {
       path: "/signup",
@@ -53,6 +55,7 @@ exports.postSignup = (req, res, next) => {
         // password: req.body.password,
         // passwordConfirmation: req.body.passwordConfirmation,
       },
+      validationsErrorsArray: errors.array(),
     });
   }
 
@@ -100,6 +103,11 @@ exports.getLogin = (req, res, next) => {
     pageTitle: "Login Page",
     path: "/login",
     errorMessage: message,
+    userInputs: {
+      email: "",
+      // password: "",
+    },
+    validationsErrorsArray: [],
   });
 };
 
@@ -117,6 +125,11 @@ exports.postLogin = (req, res, next) => {
       path: "/login",
       pageTitle: "Login",
       errorMessage: errors.array()[0].msg,
+      userInputs: {
+        email: req.body.email,
+        // password: req.body.password,
+      },
+      validationsErrorsArray: errors.array(),
     });
   }
 
