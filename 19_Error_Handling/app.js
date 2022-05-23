@@ -42,18 +42,6 @@ app.use(
 app.use(csrfProtection); // using the middleware protection, must be placed after a session
 app.use(flash()); // for flash message, TODO: continue read the doc
 
-app.use((req, res, next) => {  // 
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-    .then((user) => {
-      req.user = user; // here user is a full mongoose model: with all method and properties
-      next();
-    })
-    .catch((err) => console.log(err));
-});
-
 app.use((req, res, next) => {
   // globally send some required data, read in to know which is send !
   res.locals.isAuthenticated = req.session.isLoggedIn;
@@ -61,13 +49,47 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  //
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
+    .then((user) => {
+      if (!user) {
+        return next();
+      }
+      req.user = user; // here user is a full mongoose model: with all method and properties
+      next();
+    })
+    .catch((err) => {
+      next(new Error(err));
+    });
+});
+
 app.use("/admin", isAuth, adminRoutes);
 app.use(authRoutes);
 app.use(shopRoutes);
 
+// app.get("/500", errorController.get500);  // ? why here ?
+
+// app.use(errorController.get500);
+app.get("/500", errorController.get500);
+
 app.use(errorController.get404);
 
-mongoose.connect(process.env.MONGO_URI)
+app.use((error, req, res, next) => {
+  // res.status(500).render("500", {
+  //   pageTitle: "Error",
+  //   path: "/500",
+  //   editing: false,
+  //   hasError: true,
+  // });
+  res.redirect("/500");
+});
+
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB Database: success !");
     app.listen(3000, () =>
