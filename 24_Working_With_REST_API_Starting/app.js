@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const feedRoutes = require("./routes/feed");
+const feedRoutes = require("./routes/feedRoute");
 
 app.use(express.json());
 

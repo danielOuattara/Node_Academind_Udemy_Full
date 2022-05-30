@@ -6,7 +6,6 @@ exports.getPosts = (req, res, next) => {
 
 exports.createPosts = (req, res, next) => {
   // Create post in db
-
   res.status(201).json({
       message: "Post created successfully !",
       post: { id: Date.now().toString(), ...req.body },
