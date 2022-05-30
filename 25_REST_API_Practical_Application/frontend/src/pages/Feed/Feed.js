@@ -103,6 +103,7 @@ class Feed extends Component {
   };
 
   finishEditHandler = (postData) => {
+    console.log("postData = ", postData);
     this.setState({
       editLoading: true,
     });
