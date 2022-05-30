@@ -140,7 +140,9 @@ class App extends Component {
   render() {
     let routes = (
       <Switch>
-        <Route path="/" exact
+        <Route
+          path="/"
+          exact
           render={(props) => (
             <LoginPage
               {...props}
@@ -149,7 +151,9 @@ class App extends Component {
             />
           )}
         />
-        <Route path="/signup" exact
+        <Route
+          path="/signup"
+          exact
           render={(props) => (
             <SignupPage
               {...props}
@@ -165,7 +169,9 @@ class App extends Component {
     if (this.state.isAuth) {
       routes = (
         <Switch>
-          <Route path="/" exact
+          <Route
+            path="/"
+            exact
             render={(props) => (
               <FeedPage userId={this.state.userId} token={this.state.token} />
             )}
