@@ -1,3 +1,4 @@
+//-----------------------------------------------------------
 exports.getPosts = (req, res, next) => {
   res.status(200).json({
     posts: [
@@ -25,10 +26,17 @@ exports.getPosts = (req, res, next) => {
   });
 };
 
-exports.createPosts = (req, res, next) => {
+//-----------------------------------------------------------
+exports.createPost = (req, res, next) => {
   // Create post in db
+  console.log(req.body);
   res.status(201).json({
     message: "Post created successfully !",
-    post: { id: Date.now().toString(), ...req.body },
+    post: {
+      _id: Date.now().toString(),
+      ...req.body,
+      creator: { name: "Daniel" },
+      createdAt: new Date(),
+    },
   });
 };
