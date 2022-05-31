@@ -32,10 +32,19 @@ exports.createPost = (req, res, next) => {
     throw error;
   }
 
+  console.log("req = ", req);
+  console.log("hello");
+  
+  if (!req.file) {
+    const error = new Error("Image Not Provided");
+    error.statusCode = 404;
+    throw error;
+  }
+  
   Post.create({
     ...req.body,
-    ...req.file,
-    // imageUrl: "/images/anyPhoto.jpg",
+    // imageUrl: req.file.path,
+    imageUrl:`${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
     creator: { name: "Daniel" },
   })
     .then((post) => {
