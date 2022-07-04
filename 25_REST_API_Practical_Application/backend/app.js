@@ -4,8 +4,8 @@ const app = express();
 const feedRoutes = require("./routes/feedRoute");
 const mongoose = require("mongoose");
 const path = require("path");
-//-----------------------------------
 
+//-----------------------------------
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -24,22 +24,21 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   next();
 });
+
 // serving images statiscally
 app.use("/images", express.static(path.join(__dirname, "images")));
-//-----------------------------------
 
+//-----------------------------------
 app.use("/api/v1/feed", feedRoutes);
 
 //------------------------------------
-
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const message = error.message;
-  console.log(error);
   res.status(status).json({ message });
 });
-//------------------------------------
 
+//------------------------------------
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

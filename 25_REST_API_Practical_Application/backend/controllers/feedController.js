@@ -44,7 +44,12 @@ exports.createPost = (req, res, next) => {
         post: result,
       });
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
 };
 
 // exports.createPost = (req, res, next) => {
