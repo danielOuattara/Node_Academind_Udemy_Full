@@ -40,23 +40,36 @@
 
 // module.exports = multer({ storage: fileStorage, fileFilter }).single("image");
 
+// const multer = require('multer');
+
+// const MIME_TYPES = {
+//     'image/jpg':  'jpg',
+//     'image/jpeg': 'jpg',
+//     'image/png':  'png',
+// }
+
+// const storage = multer.diskStorage({
+//     destination: (req, file, callback) => callback( null, 'images'),
+//     filename:(req, file, callback) => {
+//             const name = file.originalname.split(' ').join('_').split('.').slice(0, -1);
+//             const extension = MIME_TYPES[file.mimetype];
+//             callback( null, name + ('_') + Date.now() + '.' + extension);
+//     }
+// });
+
+// module.exports = multer( {storage}).single('image');
 
 
-const multer = require('multer');
-
-const MIME_TYPES = {
-    'image/jpg':  'jpg',
-    'image/jpeg': 'jpg',
-    'image/png':  'png',
-}
+//------------------------------------------------------------------
+const multer = require("multer");
 
 const storage = multer.diskStorage({
-    destination: (req, file, callback) => callback( null, 'images'),
-    filename:(req, file, callback) => {
-            const name = file.originalname.split(' ').join('_').split('.').slice(0, -1);
-            const extension = MIME_TYPES[file.mimetype];
-            callback( null, name + ('_') + Date.now() + '.' + extension);
-    }
+  destination: function (req, file, cb) {
+    cb(null, "images");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  },
 });
 
-module.exports = multer( {storage}).single('image');
+module.exports = multer({ storage }).single("image");
