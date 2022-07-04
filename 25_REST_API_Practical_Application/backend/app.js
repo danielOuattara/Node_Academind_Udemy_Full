@@ -14,12 +14,14 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT,PATCHC, DELETE"
   );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
   next();
 });
 
 app.use((req, res, next) => {
-  console.log("req ====> ", req);
   next();
 });
 // serving images statiscally

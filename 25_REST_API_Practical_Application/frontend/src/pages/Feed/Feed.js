@@ -89,7 +89,9 @@ class Feed extends Component {
 
   startEditPostHandler = (postId) => {
     this.setState((prevState) => {
-      const loadedPost = { ...prevState.posts.find((p) => p._id === postId) };
+      const loadedPost = {
+        ...prevState.posts.find((p) => p._id === postId),
+      };
 
       return {
         isEditing: true,
@@ -103,14 +105,9 @@ class Feed extends Component {
   };
 
   finishEditHandler = (postData) => {
-    const formData = new FormData();
-    formData.append("title", postData.title);
-    formData.append("content", postData.content);
-    formData.append("image", postData.image, postData.image.name);
-
-    for (var data of formData) {
-      console.log(data);
-    }
+    this.setState({
+      editLoading: true,
+    });
 
     let url = "http://localhost:8080/api/v1/feed/post";
     let method = "POST";
@@ -118,13 +115,16 @@ class Feed extends Component {
       url = "URL";
     }
 
-    this.setState({
-      editLoading: true,
-    });
     // N°2: change URL & other params
     fetch(url, {
       method,
-      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: postData.title,
+        content: postData.content,
+      }),
     })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
@@ -186,7 +186,9 @@ class Feed extends Component {
       .then((resData) => {
         console.log(resData);
         this.setState((prevState) => {
-          const updatedPosts = prevState.posts.filter((p) => p._id !== postId);
+          const updatedPosts = prevState.posts.filter(
+            (p) => p._id !== postId
+          );
           return { posts: updatedPosts, postsLoading: false };
         });
       })
@@ -207,7 +209,10 @@ class Feed extends Component {
   render() {
     return (
       <Fragment>
-        <ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
+        <ErrorHandler
+          error={this.state.error}
+          onHandle={this.errorHandler}
+        />
         <FeedEdit
           editing={this.state.isEditing}
           selectedPost={this.state.editPost}
@@ -230,7 +235,11 @@ class Feed extends Component {
           </form>
         </section>
         <section className="feed__control">
-          <Button mode="raised" design="accent" onClick={this.newPostHandler}>
+          <Button
+            mode="raised"
+            design="accent"
+            onClick={this.newPostHandler}
+          >
             New Post
           </Button>
         </section>
@@ -255,11 +264,16 @@ class Feed extends Component {
                   key={post._id}
                   id={post._id}
                   author={post.creator.name}
-                  date={new Date(post.createdAt).toLocaleDateString("en-US")}
+                  date={new Date(post.createdAt).toLocaleDateString(
+                    "en-US"
+                  )}
                   title={post.title}
                   image={post.imageUrl}
                   content={post.content}
-                  onStartEdit={this.startEditPostHandler.bind(this, post._id)}
+                  onStartEdit={this.startEditPostHandler.bind(
+                    this,
+                    post._id
+                  )}
                   onDelete={this.deletePostHandler.bind(this, post._id)}
                 />
               ))}

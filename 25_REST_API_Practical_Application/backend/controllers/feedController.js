@@ -3,24 +3,20 @@ const Post = require("./../models/postModel");
 
 //-----------------------------------------------------------
 exports.getPosts = (req, res, next) => {
-  Post.find({})
-    .then((posts) => {
-      if (!posts) {
-        const error = new Error("Posts not Found");
-        error.statusCode = 404;
-        throw error;
-      }
-      res.status(200).json({
-        message: "Post found successfully !",
-        posts,
-      });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
+  res.status(200).json({
+    posts: [
+      {
+        _id: "1",
+        title: "First Post",
+        content: "This is the first content",
+        imageUrl: "images/dinausore.jpg",
+        creator: {
+          name: "Daniel",
+        },
+        createdAt: new Date(),
+      },
+    ],
+  });
 };
 
 //-----------------------------------------------------------
@@ -31,35 +27,55 @@ exports.createPost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-
-  console.log("req = ", req);
-  console.log("hello");
-  
-  if (!req.file) {
-    const error = new Error("Image Not Provided");
-    error.statusCode = 404;
-    throw error;
-  }
-  
-  Post.create({
-    ...req.body,
-    // imageUrl: req.file.path,
-    imageUrl:`${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-    creator: { name: "Daniel" },
-  })
-    .then((post) => {
-      res.status(201).json({
-        message: "Post created successfully !",
-        post,
-      });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
+  const title = req.body.title;
+  const content = req.body.content;
+  res.status(201).json({
+    message: "Post created successfully !",
+    post: {
+      _id: Date.now().toString(),
+      title,
+      content,
+      creator: { name: "Daniel" },
+      createdAt: new Date(),
+    },
+  });
 };
+
+// exports.createPost = (req, res, next) => {
+//   const errors = validationResult(req);
+//   if (!errors.isEmpty()) {
+//     const error = new Error(errors.array()[0].msg);
+//     error.statusCode = 422;
+//     throw error;
+//   }
+
+//   if (!req.file) {
+//     const error = new Error("Image Not Provided");
+//     error.statusCode = 404;
+//     throw error;
+//   }
+
+//   Post.create({
+//     ...req.body,
+//     // imageUrl: req.file.path,
+//     imageUrl: `${req.protocol}://${req.get("host")}/images/${
+//       req.file.filename
+//     }`,
+//     creator: { name: "Daniel" },
+//   })
+//     .then((post) => {
+//       res.status(201).json({
+//         message: "Post created successfully !",
+//         post,
+//       });
+//     })
+//     .catch((error) => {
+//       if (!error.statusCode) {
+//         error.statusCode = 500;
+//       }
+//       next(error);
+//     });
+// };
 
 //-----------------------------------------------------------
 exports.getOnePost = (req, res, next) => {
