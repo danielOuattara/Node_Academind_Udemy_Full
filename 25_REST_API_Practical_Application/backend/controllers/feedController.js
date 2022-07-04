@@ -27,18 +27,24 @@ exports.createPost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  const title = req.body.title;
-  const content = req.body.content;
-  res.status(201).json({
-    message: "Post created successfully !",
-    post: {
-      _id: Date.now().toString(),
-      title,
-      content,
-      creator: { name: "Daniel" },
-      createdAt: new Date(),
-    },
+
+  const { title, content } = req.body;
+
+  const post = new Post({
+    title,
+    content,
+    imageUrl: "images/dinausore.jpg",
+    creator: { name: "Daniel" },
   });
+  post.save()
+    .then((result) => {
+      console.log(result);
+      res.status(201).json({
+        message: "Post created successfully !",
+        post: result,
+      });
+    })
+    .catch((error) => console.log(error));
 };
 
 // exports.createPost = (req, res, next) => {
