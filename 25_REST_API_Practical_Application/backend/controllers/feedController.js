@@ -3,20 +3,16 @@ const Post = require("./../models/postModel");
 
 //-----------------------------------------------------------
 exports.getPosts = (req, res, next) => {
-  res.status(200).json({
-    posts: [
-      {
-        _id: "1",
-        title: "First Post",
-        content: "This is the first content",
-        imageUrl: "images/dinausore.jpg",
-        creator: {
-          name: "Daniel",
-        },
-        createdAt: new Date(),
-      },
-    ],
-  });
+  Post.find({})
+    .then((posts) => {
+      res.status(200).json({ posts });
+    })
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
 };
 
 //-----------------------------------------------------------
@@ -52,6 +48,7 @@ exports.createPost = (req, res, next) => {
     });
 };
 
+//-----------------------------------------------------------
 // exports.createPost = (req, res, next) => {
 //   const errors = validationResult(req);
 //   if (!errors.isEmpty()) {
