@@ -15,15 +15,10 @@ const postSchema = new mongoose.Schema(
       required: [true, "Title is required for a new post"],
     },
     creator: {
-      type: Object,
-      required: [true, "Creator is required for a new post"],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-
-    // ownerId: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: [true, "OwnerId is required for a new post"],
-    // },
   },
   { timestamps: true }
 );
