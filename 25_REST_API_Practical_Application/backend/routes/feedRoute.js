@@ -7,5 +7,12 @@ const multer = require("./../middlewares/multer-config");
 router.get("/posts", feedController.getPosts);
 router.post("/post", multer, postValidation, feedController.createPost);
 router.get("/post/:postId", feedController.getOnePost);
+router.put(
+  "/post/:postId",
+  multer,
+  postValidation,
+  feedController.updatePost
+);
+
 
 module.exports = router;
