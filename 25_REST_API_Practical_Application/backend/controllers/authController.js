@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const User = require("./../models/userModel");
 const Post = require("./../models/postModel");
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 //-----------------------------------------------------------
 exports.signUp = (req, res, next) => {
@@ -45,6 +46,7 @@ exports.login = (req, res, next) => {
 
   const { email, password } = req.body;
 
+  let userOnLogin;
   User.findOne({ email })
     .then((user) => {
       if (!user) {
@@ -52,6 +54,10 @@ exports.login = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+
+      userOnLogin = user;
+
+      console.log("user = ", user);
 
       return bcryptjs.compare(password, user.password);
     })
@@ -61,6 +67,16 @@ exports.login = (req, res, next) => {
         error.statusCode = 401;
         throw error;
       }
+      const token = jwt.sign(
+        {
+          userId: userOnLogin._id,
+          email: userOnLogin.email,
+          name: userOnLogin.name,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "2h" }
+      );
+      res.status(201).json({ token, userId: userOnLogin._id });
     })
     .catch((error) => {
       if (!error.statusCode) {
@@ -68,18 +84,6 @@ exports.login = (req, res, next) => {
       }
       next(error);
     });
-
-  bcyptjs
-    .hash(password, 11)
-    .then((hashedPassword) => {
-      console.log("Here");
-      return User.create({ email, name, password: hashedPassword });
-    })
-    .then((user) =>
-      res
-        .status(201)
-        .json({ user, message: "user successfully created! " })
-    );
 };
 
 //--------------------------------------------------------
