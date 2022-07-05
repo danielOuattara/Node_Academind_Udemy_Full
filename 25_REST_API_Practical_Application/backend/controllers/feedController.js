@@ -5,9 +5,20 @@ const path = require("path");
 
 //-----------------------------------------------------------
 exports.getPosts = (req, res, next) => {
-  Post.find({})
+  const currentPage = Number(req.query.page) || 1;
+  const perPage = 2;
+  let totalItems;
+
+  Post.find()
+    .countDocuments()
+    .then((count) => {
+      totalItems = count;
+      return Post.find({})
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage);
+    })
     .then((posts) => {
-      res.status(200).json({ posts });
+      res.status(200).json({ posts, totalItems });
     })
     .catch((error) => {
       if (!error.statusCode) {
