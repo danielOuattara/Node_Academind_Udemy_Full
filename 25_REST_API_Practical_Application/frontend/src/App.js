@@ -17,7 +17,7 @@ class App extends Component {
   state = {
     showBackdrop: false,
     showMobileNav: false,
-    isAuth: true,
+    isAuth: false,
     token: null,
     userId: null,
     authLoading: false,
@@ -47,7 +47,11 @@ class App extends Component {
   };
 
   backdropClickHandler = () => {
-    this.setState({ showBackdrop: false, showMobileNav: false, error: null });
+    this.setState({
+      showBackdrop: false,
+      showMobileNav: false,
+      error: null,
+    });
   };
 
   logoutHandler = () => {
@@ -99,8 +103,17 @@ class App extends Component {
 
   signupHandler = (event, authData) => {
     event.preventDefault();
+    console.log("authData = ", authData);
     this.setState({ authLoading: true });
-    fetch("URL")
+    fetch("http://localhost:8080/api/v1/auth/signup", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: authData.signupForm.email.value,
+        name: authData.signupForm.name.value,
+        password: authData.signupForm.password.value,
+      }),
+    })
       .then((res) => {
         if (res.status === 422) {
           throw new Error(
@@ -173,7 +186,10 @@ class App extends Component {
             path="/"
             exact
             render={(props) => (
-              <FeedPage userId={this.state.userId} token={this.state.token} />
+              <FeedPage
+                userId={this.state.userId}
+                token={this.state.token}
+              />
             )}
           />
           <Route
@@ -195,7 +211,10 @@ class App extends Component {
         {this.state.showBackdrop && (
           <Backdrop onClick={this.backdropClickHandler} />
         )}
-        <ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
+        <ErrorHandler
+          error={this.state.error}
+          onHandle={this.errorHandler}
+        />
         <Layout
           header={
             <Toolbar>
