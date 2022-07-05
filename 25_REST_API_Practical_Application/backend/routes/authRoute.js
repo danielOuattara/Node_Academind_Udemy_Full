@@ -7,6 +7,7 @@ const multer = require("./../middlewares/multer-config");
 //--------------------------------------------------------------
 
 router.put("/signup", signUpValidate, authController.signUp);
+router.post("/login", authController.login);
 
 //--------------------------------------------------------------
 module.exports = router;
