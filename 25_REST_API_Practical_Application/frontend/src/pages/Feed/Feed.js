@@ -51,8 +51,10 @@ class Feed extends Component {
       this.setState({ postPage: page });
     }
     // n°1: complete url
-    fetch(`http://localhost:8080/api/v1/feed/posts?page=${page}`, {
-      headers: { Authorization: `Bearer ${this.props.token}` },
+    fetch(`http://localhost:8080/api/v1/feed/posts?=${page}`, {
+      headers: {
+        Authorization: `Bearer ${this.props.token}`,
+      },
     })
       .then((res) => {
         if (res.status !== 200) {
@@ -62,7 +64,10 @@ class Feed extends Component {
       })
       .then((resData) => {
         this.setState({
-          posts: resData.posts,
+          posts: resData.posts.map((item) => ({
+            ...item,
+            imagePath: item.imageUrl,
+          })),
           totalPosts: resData.totalItems,
           postsLoading: false,
         });
@@ -118,15 +123,19 @@ class Feed extends Component {
 
     let url = "http://localhost:8080/api/v1/feed/post";
     let method = "POST";
+
     if (this.state.editPost) {
-      url = "URL";
+      url = `http://localhost:8080/api/v1/feed/post/${this.state.editPost._id}`;
+      method = "PUT";
     }
 
     // N°2: change URL & other params
     fetch(url, {
       method,
       body: formData,
-      headers: { Authorization: `Bearer ${this.props.token}` },
+      headers: {
+        Authorization: `Bearer ${this.props.token}`,
+      },
     })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
@@ -180,7 +189,9 @@ class Feed extends Component {
     this.setState({ postsLoading: true });
     fetch(`http://localhost:8080/api/v1/feed/post/${postId}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${this.props.token}` },
+      headers: {
+        Authorization: `Bearer ${this.props.token}`,
+      },
     })
       .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
