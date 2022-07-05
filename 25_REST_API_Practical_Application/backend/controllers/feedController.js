@@ -128,6 +128,32 @@ exports.updatePost = (req, res, next) => {
       next(error);
     });
 };
+//-----------------------------------------------------------
+exports.deletePost = (req, res, next) => {
+  Post.findById(req.params.postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error("Post not Found");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      // Here: check user authorization then accept/reject action
+
+      clearFileUponUpdate(post.imageUrl);
+
+      return post.deleteOne({ _id: req.params.postId });
+    })
+    .then(() => {
+      res.status(200).json({ message: "Post deleted successfully !" });
+    })
+    .catch((error) => {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
+};
 
 //--------------------------------------------------------
 clearFileUponUpdate = (filePath) => {
