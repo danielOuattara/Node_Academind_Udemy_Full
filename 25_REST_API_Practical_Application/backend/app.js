@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const feedRoutes = require("./routes/feedRoute");
+const authRoutes = require("./routes/authRoute");
 const mongoose = require("mongoose");
 const path = require("path");
 
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 //-----------------------------------
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/feed", feedRoutes);
 
 //------------------------------------
