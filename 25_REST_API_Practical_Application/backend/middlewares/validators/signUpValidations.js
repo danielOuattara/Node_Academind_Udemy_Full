@@ -1,7 +1,7 @@
 const { check, body } = require("express-validator");
-const User = require("./../../models/user");
+const User = require("./../../models/userModel");
 
-const signInValidate = [
+const signUpValidate = [
   check("email")
     .isEmail()
     .withMessage("Email address is Invalid / Missing")
@@ -26,14 +26,7 @@ const signInValidate = [
       min: 5,
     }),
 
-  body("passwordConfirmation")
-    .trim()
-    .custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Password confirmation does not match password");
-      }
-      return true;
-    }),
+  body("name").trim().not().isEmpty(),
 ];
 
-module.exports = signInValidate;
+module.exports = signUpValidate;
