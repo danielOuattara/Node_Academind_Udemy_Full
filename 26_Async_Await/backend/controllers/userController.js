@@ -21,31 +21,29 @@ exports.getStatus = async (req, res, next) => {
 };
 
 //--------------------------------------------------------
-exports.updateStatus = (req, res, next) => {
+exports.updateStatus = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error(errors.array()[0].msg);
     error.statusCode = 422;
     throw error;
   }
-  User.findById(req.userId)
-    .then((user) => {
-      if (!user) {
-        const error = new Error("User Unknown");
-        error.statusCode = 404;
-        throw error;
-      }
 
-      user.status = req.body.status;
-      return user.save();
-    })
-    .then(() => {
-      res.status(200).json({ message: "status updated !" });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
+  try {
+    const user = await User.findById(req.userId);
+    if (!user) {
+      const error = new Error("User Unknown");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    user.status = req.body.status;
+    await user.save();
+    res.status(200).json({ message: "status updated !" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
