@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const feedRoutes = require("./routes/feedRoute");
 const authRoutes = require("./routes/authRoute");
+const userRoutes = require("./routes/userRoute");
 const mongoose = require("mongoose");
 const path = require("path");
 
@@ -32,6 +33,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 //-----------------------------------
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/feed", feedRoutes);
+app.use("/api/v1/user", userRoutes);
 
 //------------------------------------
 app.use((error, req, res, next) => {
