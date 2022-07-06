@@ -137,42 +137,35 @@ exports.updatePost = async (req, res, next) => {
   }
 };
 //-----------------------------------------------------------
-exports.deletePost = (req, res, next) => {
-  Post.findById(req.params.postId)
-    .then((post) => {
-      if (!post) {
-        const error = new Error("Post not Found");
-        error.statusCode = 404;
-        throw error;
-      }
+exports.deletePost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      const error = new Error("Post not Found");
+      error.statusCode = 404;
+      throw error;
+    }
 
-      // Here: check user authorization then accept/reject action
-      if (post.creator.toString() !== req.userId) {
-        const error = new Error("Not Authorized");
-        error.statusCode = 403;
-        throw error;
-      }
+    // Here: check user authorization then accept/reject action
+    if (post.creator.toString() !== req.userId) {
+      const error = new Error("Not Authorized");
+      error.statusCode = 403;
+      throw error;
+    }
 
-      clearFileUponUpdate(post.imageUrl);
+    clearFileUponUpdate(post.imageUrl);
 
-      return post.deleteOne({ _id: req.params.postId });
-    })
-    .then(() => {
-      return User.findById(req.userId);
-    })
-    .then((user) => {
-      user.posts.pull(req.params.postId);
-      return user.save();
-    })
-    .then(() =>
-      res.status(200).json({ message: "Post deleted successfully !" })
-    )
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
+    await post.deleteOne({ _id: req.params.postId });
+    const user = await User.findById(req.userId);
+    user.posts.pull(req.params.postId);
+    await user.save();
+    res.status(200).json({ message: "Post deleted successfully !" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
 
 //--------------------------------------------------------
