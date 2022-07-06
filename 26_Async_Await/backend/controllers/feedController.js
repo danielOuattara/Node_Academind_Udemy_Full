@@ -13,8 +13,8 @@ exports.getPosts = async (req, res, next) => {
     const posts = await Post.find({})
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
-    res.status(200).json({ posts, totalItems });
-  } catch {
+    return res.status(200).json({ posts, totalItems });
+  } catch (error) {
     (error) => {
       if (!error.statusCode) {
         error.statusCode = 500;
@@ -25,7 +25,7 @@ exports.getPosts = async (req, res, next) => {
 };
 
 //-----------------------------------------------------------
-exports.createPost = (req, res, next) => {
+exports.createPost = async (req, res, next) => {
   // validations results are handled here
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -33,46 +33,40 @@ exports.createPost = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-
   if (!req.file) {
     const error = new Error("No image is provided");
     error.statusCode = 400;
     throw error;
   }
 
-  let creator;
-  const { title, content } = req.body;
-  const imageUrl = req.file.path;
-  const post = new Post({
-    title,
-    content,
-    imageUrl,
-    creator: req.userId,
-  });
-  post
-    .save()
-    .then(() => {
-      return User.findById(req.userId);
-    })
-    .then((user) => {
-      creator = user;
-      // user creator data is updated
-      user.posts.push(post);
-      return user.save();
-    })
-    .then((result) => {
-      res.status(201).json({
-        message: "Post created successfully !",
-        post,
-        creator: { _id: creator._id, name: creator.name },
-      });
-    })
-    .catch((error) => {
+  try {
+    const { title, content } = req.body;
+    const imageUrl = req.file.path;
+
+    const post = await Post.create({
+      title,
+      content,
+      imageUrl,
+      creator: req.userId,
+    });
+
+    const user = await User.findById(req.userId);
+    user.posts.push(post);
+    await user.save();
+
+    return res.status(201).json({
+      message: "Post created successfully !",
+      post,
+      creator: { _id: user._id, name: user.name },
+    });
+  } catch (error) {
+    (error) => {
       if (!error.statusCode) {
         error.statusCode = 500;
       }
       next(error);
-    });
+    };
+  }
 };
 
 //-----------------------------------------------------------
