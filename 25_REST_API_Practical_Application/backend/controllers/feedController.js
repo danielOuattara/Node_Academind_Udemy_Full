@@ -130,6 +130,12 @@ exports.updatePost = (req, res, next) => {
         throw error;
       }
 
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error("Not Authorized");
+        error.statusCode = 403;
+        throw error;
+      }
+
       if (imageUrl !== post.imageUrl) {
         clearFileUponUpdate(post.imageUrl);
       }
@@ -163,6 +169,11 @@ exports.deletePost = (req, res, next) => {
       }
 
       // Here: check user authorization then accept/reject action
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error("Not Authorized");
+        error.statusCode = 403;
+        throw error;
+      }
 
       clearFileUponUpdate(post.imageUrl);
 
