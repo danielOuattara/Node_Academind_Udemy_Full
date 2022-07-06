@@ -5,28 +5,23 @@ const fs = require("fs");
 const path = require("path");
 
 //-----------------------------------------------------------
-exports.getPosts = (req, res, next) => {
-  const currentPage = Number(req.query.page) || 1;
-  const perPage = 2;
-  let totalItems;
-
-  Post.find()
-    .countDocuments()
-    .then((count) => {
-      totalItems = count;
-      return Post.find({})
-        .skip((currentPage - 1) * perPage)
-        .limit(perPage);
-    })
-    .then((posts) => {
-      res.status(200).json({ posts, totalItems });
-    })
-    .catch((error) => {
+exports.getPosts = async (req, res, next) => {
+  try {
+    const currentPage = Number(req.query.page) || 1;
+    const perPage = 2;
+    const totalItems = await Post.find().countDocuments();
+    const posts = await Post.find({})
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
+    res.status(200).json({ posts, totalItems });
+  } catch {
+    (error) => {
       if (!error.statusCode) {
         error.statusCode = 500;
       }
       next(error);
-    });
+    };
+  }
 };
 
 //-----------------------------------------------------------
@@ -54,7 +49,8 @@ exports.createPost = (req, res, next) => {
     imageUrl,
     creator: req.userId,
   });
-  post.save()
+  post
+    .save()
     .then(() => {
       return User.findById(req.userId);
     })
@@ -183,7 +179,7 @@ exports.deletePost = (req, res, next) => {
       return User.findById(req.userId);
     })
     .then((user) => {
-      user.posts.pull(req.params.postId)
+      user.posts.pull(req.params.postId);
       return user.save();
     })
     .then(() =>
