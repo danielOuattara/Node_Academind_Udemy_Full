@@ -15,12 +15,10 @@ exports.getPosts = async (req, res, next) => {
       .limit(perPage);
     return res.status(200).json({ posts, totalItems });
   } catch (error) {
-    (error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    };
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
 };
 
@@ -54,41 +52,34 @@ exports.createPost = async (req, res, next) => {
     user.posts.push(post);
     await user.save();
 
-    return res.status(201).json({
-      message: "Post created successfully !",
-      post,
-      creator: { _id: user._id, name: user.name },
-    });
+    return res
+      .status(201)
+      .json({ post, creator: { _id: user._id, name: user.name } });
   } catch (error) {
-    (error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    };
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
 };
 
 //-----------------------------------------------------------
-exports.getOnePost = (req, res, next) => {
-  Post.findById(req.params.postId)
-    .then((post) => {
-      if (!post) {
-        const error = new Error("Post not Found");
-        error.statusCode = 404;
-        throw error;
-      }
-      res.status(200).json({
-        message: "Post found successfully !",
-        post,
-      });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
-    });
+exports.getOnePost = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      const error = new Error("Post not Found");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ post });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
 
 //-----------------------------------------------------------
