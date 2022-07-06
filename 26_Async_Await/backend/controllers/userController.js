@@ -2,22 +2,22 @@ const { validationResult } = require("express-validator");
 const User = require("./../models/userModel");
 
 //--------------------------------------------------------
-exports.getStatus = (req, res, next) => {
-  User.findById(req.userId)
-    .then((user) => {
+exports.getStatus = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.userId).then((user) => {
       if (!user) {
         const error = new Error("User Unknown");
         error.statusCode = 404;
         throw error;
       }
       res.status(200).json({ status: user.status });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
     });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
 
 //--------------------------------------------------------
