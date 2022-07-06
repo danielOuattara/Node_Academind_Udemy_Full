@@ -47,6 +47,9 @@ class Feed extends Component {
         this.addPost(data.post);
       } else if (data.action === "update") {
         this.updatePost(data.post);
+      } else if (data.action === "delete") {
+        this.loadPosts();
+        // this.deletePost(data.post);
       }
     });
   }
@@ -79,6 +82,15 @@ class Feed extends Component {
         updatedPosts[updatedPostIndex] = post;
       }
       return { posts: updatedPosts };
+    });
+  };
+
+  // by me
+  deletePost = (postId) => {
+    this.setState((prevState) => {
+      const updatedPosts = [...prevState.posts];
+      updatedPosts.filter((item) => item._id !== postId);
+      return { posts: updatedPosts, postsLoading: false };
     });
   };
 
@@ -204,18 +216,8 @@ class Feed extends Component {
           creator: resData.post.creator,
           createdAt: resData.post.createdAt,
         };
-        this.setState((prevState) => {
-          // let updatedPosts = [...prevState.posts];
-          // if (prevState.editPost) {
-          //   const postIndex = prevState.posts.findIndex(
-          //     (p) => p._id === prevState.editPost._id
-          //   );
-          //   updatedPosts[postIndex] = post;
-          // } else if (prevState.posts.length < 2) {
-          //   updatedPosts = prevState.posts.concat(post);
-          // }
+        this.setState(() => {
           return {
-            // posts: updatedPosts,
             isEditing: false,
             editPost: null,
             editLoading: false,
@@ -253,12 +255,9 @@ class Feed extends Component {
       })
       .then((resData) => {
         console.log(resData);
-        this.setState((prevState) => {
-          const updatedPosts = prevState.posts.filter(
-            (p) => p._id !== postId
-          );
-          return { posts: updatedPosts, postsLoading: false };
-        });
+        // this.loadPosts();
+        this.deletePost(resData);
+
       })
       .catch((err) => {
         console.log(err);

@@ -65,7 +65,7 @@ exports.createPost = async (req, res, next) => {
       action: "create",
       post: {
         ...post._doc,
-        creator: { _id: req.userId, anme: user.name },
+        creator: { _id: req.userId, name: user.name },
       },
     });
 
@@ -187,6 +187,12 @@ exports.deletePost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.pull(req.params.postId);
     await user.save();
+
+    io.getIO().emit("posts", {
+      action: "delete",
+      post: req.params.postId
+    });
+
     res.status(200).json({ message: "Post deleted successfully !" });
   } catch (error) {
     if (!error.statusCode) {
