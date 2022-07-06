@@ -180,8 +180,15 @@ exports.deletePost = (req, res, next) => {
       return post.deleteOne({ _id: req.params.postId });
     })
     .then(() => {
-      res.status(200).json({ message: "Post deleted successfully !" });
+      return User.findById(req.userId);
     })
+    .then((user) => {
+      user.posts.pull(req.params.postId)
+      return user.save();
+    })
+    .then(() =>
+      res.status(200).json({ message: "Post deleted successfully !" })
+    )
     .catch((error) => {
       if (!error.statusCode) {
         error.statusCode = 500;
