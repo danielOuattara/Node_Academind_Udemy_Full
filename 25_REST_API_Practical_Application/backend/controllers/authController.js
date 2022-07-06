@@ -1,3 +1,5 @@
+const path = require("path");
+const fs = require("fs");
 const { validationResult } = require("express-validator");
 const User = require("./../models/userModel");
 const Post = require("./../models/postModel");
@@ -47,6 +49,7 @@ exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   let userOnLogin;
+
   User.findOne({ email })
     .then((user) => {
       if (!user) {
@@ -56,8 +59,6 @@ exports.login = (req, res, next) => {
       }
 
       userOnLogin = user;
-
-      console.log("user = ", user);
 
       return bcryptjs.compare(password, user.password);
     })
