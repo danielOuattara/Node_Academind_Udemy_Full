@@ -7,7 +7,7 @@ const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 //-----------------------------------------------------------
-exports.signUp = (req, res, next) => {
+exports.signUp = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error(errors.array()[0].msg);
@@ -16,24 +16,21 @@ exports.signUp = (req, res, next) => {
     throw error;
   }
 
-  const { email, name, password } = req.body;
-  bcryptjs
-    .hash(password, 11)
-    .then((hashedPassword) => {
-      console.log("Here");
-      return User.create({ email, name, password: hashedPassword });
-    })
-    .then((user) =>
-      res
-        .status(201)
-        .json({ user, message: "user successfully created! " })
-    )
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
+  try {
+    const { email, name, password } = req.body;
+    const hashedPassword = await bcryptjs.hash(password, 11);
+    const user = await User.create({
+      email,
+      name,
+      password: hashedPassword,
     });
+    res.status(201).json({ user, message: "user successfully created! " });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
 
 //-----------------------------------------------------------
