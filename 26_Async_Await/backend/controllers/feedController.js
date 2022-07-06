@@ -83,7 +83,7 @@ exports.getOnePost = async (req, res, next) => {
 };
 
 //-----------------------------------------------------------
-exports.updatePost = (req, res, next) => {
+exports.updatePost = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error(errors.array()[0].msg);
@@ -91,53 +91,50 @@ exports.updatePost = (req, res, next) => {
     throw error;
   }
 
-  const { title, content } = req.body;
-  let imageUrl = req.body.image;
-  if (req.file) {
-    imageUrl = req.file.path;
-  }
+  try {
+    const { title, content } = req.body;
+    let imageUrl = req.body.image;
+    if (req.file) {
+      imageUrl = req.file.path;
+    }
 
-  if (!imageUrl) {
-    const error = new Error("No file picked !");
-    error.statusCode = 400;
-    throw error;
-  }
+    if (!imageUrl) {
+      const error = new Error("No file picked !");
+      error.statusCode = 400;
+      throw error;
+    }
 
-  Post.findById(req.params.postId)
-    .then((post) => {
-      if (!post) {
-        const error = new Error("Post not Found");
-        error.statusCode = 404;
-        throw error;
-      }
+    const post = await Post.findById(req.params.postId);
+    if (!post) {
+      const error = new Error("Post not Found");
+      error.statusCode = 404;
+      throw error;
+    }
 
-      if (post.creator.toString() !== req.userId) {
-        const error = new Error("Not Authorized");
-        error.statusCode = 403;
-        throw error;
-      }
+    if (post.creator.toString() !== req.userId) {
+      const error = new Error("Not Authorized");
+      error.statusCode = 403;
+      throw error;
+    }
 
-      if (imageUrl !== post.imageUrl) {
-        clearFileUponUpdate(post.imageUrl);
-      }
-      post.title = title;
-      post.content = content;
-      post.imageUrl = imageUrl;
+    if (imageUrl !== post.imageUrl) {
+      clearFileUponUpdate(post.imageUrl);
+    }
+    post.title = title;
+    post.content = content;
+    post.imageUrl = imageUrl;
 
-      return post.save(); // returning the promise
-    })
-    .then((post) => {
-      res.status(200).json({
-        message: "Post updated successfully !",
-        post,
-      });
-    })
-    .catch((error) => {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
-      next(error);
+    await post.save();
+    return res.status(200).json({
+      message: "Post updated successfully !",
+      post,
     });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
 };
 //-----------------------------------------------------------
 exports.deletePost = (req, res, next) => {
