@@ -3,6 +3,7 @@ const Post = require("./../models/postModel");
 const User = require("./../models/userModel");
 const fs = require("fs");
 const path = require("path");
+const io = require("./../socket");
 
 //-----------------------------------------------------------
 exports.getPosts = async (req, res, next) => {
@@ -51,6 +52,14 @@ exports.createPost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.push(post);
     await user.save();
+
+    /* 
+      after saving the post in DB, and before returning 
+      the response to client emit an action called "create", 
+      that carrying the "post" itself to inform other clients.
+    */
+
+    io.getIO().emit("posts", { action: "create", post });
 
     return res
       .status(201)
