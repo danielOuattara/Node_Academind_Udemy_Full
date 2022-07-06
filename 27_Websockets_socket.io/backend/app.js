@@ -53,11 +53,17 @@ mongoose
       console.log(`App is running on port http://localhost:${8080}/`)
     );
 
-    // npm install socket.io for backend + configure optionnaly here
-    const io = require("socket.io")(server);
+    // npm install socket.io for backend + configure optionally here
+    const io = require("socket.io")(server, {
+      cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+      },
+    });
     // console.log("io = ", io);
     io.on("connection", (socket) => {
       console.log("Client connected");
+      // console.log(socket);
     });
   })
   .catch((err) => console.log(err));

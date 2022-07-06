@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-
+import openSocket from "socket.io-client"; // a fucntion that allows connection
 import Post from "../../components/Feed/Post/Post";
 import Button from "../../components/Button/Button";
 import FeedEdit from "../../components/Feed/FeedEdit/FeedEdit";
@@ -39,6 +39,9 @@ class Feed extends Component {
       .catch(this.catchError);
 
     this.loadPosts();
+
+    // socket.io staffs here
+    openSocket("http://localhost:8080");
   }
 
   loadPosts = (direction) => {
