@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import openSocket from "socket.io-client"; // a fucntion that allows connection
+import openSocket from "socket.io-client"; // a function that allows connection
 import Post from "../../components/Feed/Post/Post";
 import Button from "../../components/Button/Button";
 import FeedEdit from "../../components/Feed/FeedEdit/FeedEdit";
@@ -41,8 +41,30 @@ class Feed extends Component {
     this.loadPosts();
 
     // socket.io staffs here
-    openSocket("http://localhost:8080");
+    const socket = openSocket("http://localhost:8080");
+    socket.on("posts", (data) => {
+      if (data.action === "create") {
+        this.addPost(data.post);
+      }
+    });
   }
+
+  // function to get data through socket.io
+  addPost = (post) => {
+    this.setState((prevState) => {
+      const updatedPosts = [...prevState.posts];
+      if (prevState.postPage === 1 && prevState.posts.length >= 2) {
+        updatedPosts.pop();
+      }
+      if (prevState.postPage === 1) {
+        updatedPosts.unshift(post);
+      }
+      return {
+        posts: updatedPosts,
+        totalPosts: prevState.totalPosts + 1,
+      };
+    });
+  };
 
   loadPosts = (direction) => {
     if (direction) {
