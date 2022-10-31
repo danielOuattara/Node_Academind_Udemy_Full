@@ -1,55 +1,52 @@
-const fetchInfo = callback => {
-    setTimeout(() => {
-        callback('Done!')
-    })
-}
+const fetchInfo = (callback) => {
+  setTimeout(() => {
+    callback("Work is Done!");
+  }, 500);
+};
 
 setTimeout(() => {
-    console.log('Timer Zero');
-    fetchInfo(data => {
-        console.log(data)
-    })
-})
-
+  console.log("Timer Zero");
+  fetchInfo((data) => {
+    console.log(data);
+  });
+});
 
 //-------------------------------------------------------------
 
 const fetchData = () => {
-    const promise = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve('Done!');
-        }, 1500);
-    });
-    return promise;
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("Done!");
+    }, 1500);
+  });
+  return promise;
 };
-
 
 const fetchDataError = () => {
-    const promise = new Promise((resolve, reject) => {
-        setTimeout(() => {
-            reject('Error!');
-        }, 2500);
-    });
-    return promise;
+  const promise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+      reject("Error!");
+    }, 2500);
+  });
+  return promise;
 };
 
-//-------------------------------------------------------------
-
 setTimeout(() => {
-    console.log('Timer is done!');
-    fetchData()
-        .then(text => {
-            console.log(text);
-            return fetchData();
-        })
-        .then(text2 => {
-            console.log(text2);
-        });
+  console.log("Timer is done!");
+  fetchData()
+    .then((text) => {
+      console.log(text);
+      return fetchData();
+    })
+    .then((text2) => {
+      console.log(text2);
+    });
 
-    fetchDataError()
-        .then(text => console.log(text))
-        .catch(err => console.log(err))
+  fetchDataError()
+    .then((text) => console.log(text))
+    .catch((err) => console.log(err));
 }, 2000);
 
-console.log('Hello!');
-console.log('Hi!');
+//----------------------------------------------------
+console.log("Hello!");
+console.log("Hi!");
