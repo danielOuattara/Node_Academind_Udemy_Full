@@ -1,1 +1,20 @@
-[{"title":"Goat","imageUrl":"http://www.biolib.cz/IMG/GAL/BIG/232234.jpg","description":"A nice milky goat","price":"56"}]
+[
+  {
+    "title": "Goat",
+    "imageUrl": "http://www.biolib.cz/IMG/GAL/BIG/232234.jpg",
+    "description": "A nice milky goat",
+    "price": "56"
+  },
+  {
+    "title": "A Book super",
+    "imageUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.AnVrizc7UIUw-gVyV5o4FgHaE7%26pid%3DApi&f=1",
+    "description": "a super book",
+    "price": "56.99"
+  },
+  {
+    "title": "babylonian tablets",
+    "imageUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.SMHqPDDzlwLoh4_ROuTRbgHaGD%26pid%3DApi&f=1",
+    "description": "zrrzrzh",
+    "price": "0.21"
+  }
+]
