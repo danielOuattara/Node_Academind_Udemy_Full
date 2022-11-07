@@ -1,5 +1,5 @@
 <%- include('includes/head.ejs') %>
-    <link rel="stylesheet" href="/css/product.css">
+<link rel="stylesheet" href="/css/product.css">
 </head>
 
 <body>
@@ -7,13 +7,13 @@
 
     <main>
         <% if (users.length > 0) { %>
-            <ul>
-                <% for (let user of users) { %>
-                    <li><%= user.title %></li>
-                <% } %>
-                </ul>
+        <ul>
+            <% for (let user of users) { %>
+            <li><%= user.title %></li>
+            <% } %>
+        </ul>
         <% } else { %>
-            <h1>No User Found!</h1>
+        <h1>No User Found!</h1>
         <% } %>
     </main>
-<%- include('includes/end.ejs') %>
+    <%- include('includes/end.ejs') %>

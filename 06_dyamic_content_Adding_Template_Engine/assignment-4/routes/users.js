@@ -1,18 +1,18 @@
-const path = require('path');
-const express = require('express');
-const rootDir = require('../util/path');
-const homeRoutes = require('./home');
+const path = require("path");
+const express = require("express");
+const rootDir = require("../util/path");
+const homeRoutes = require("./home");
 const router = express.Router();
 
-router.get('/users', (req, res, next) => {
+router.get("/users", (req, res, next) => {
   const users = homeRoutes.users;
-  res.render('users', {
+  res.render("users", {
     users,
-    pageTitle: 'Users',
-    path: '/users',
+    pageTitle: "Users",
+    path: "/users",
     hasProducts: users.length > 0,
     activeShop: true,
-    productCSS: true
+    productCSS: true,
   });
 });
 
