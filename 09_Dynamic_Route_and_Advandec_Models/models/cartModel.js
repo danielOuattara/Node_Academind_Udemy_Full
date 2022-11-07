@@ -1,38 +1,40 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("node:fs");
+const path = require("path");
 
 const p = path.join(
   path.dirname(process.mainModule.filename),
-  'data',
-  'cart.json'
+  "data",
+  "cart.json"
 );
 
 module.exports = class Cart {
   static addProduct(id, productPrice) {
     // Fetch the previous cart
+
     fs.readFile(p, (err, fileContent) => {
       let cart = { products: [], totalPrice: 0 };
       if (!err) {
         cart = JSON.parse(fileContent);
       }
       // Analyze the cart => Find existing product
-      const existingProductIndex = cart.products.findIndex(
-        prod => prod.id === id
-      );
-      const existingProduct = cart.products[existingProductIndex];
+      const existingProductIndex = cart.products.findIndex((p) => p.id === id);
+
       let updatedProduct;
-      // Add new product/ increase quantity
-      if (existingProduct) {
-        updatedProduct = { ...existingProduct };
+
+      if (existingProductIndex !== -1) {
+        // Increase product quantity
+        updatedProduct = { ...cart.products[existingProductIndex] };
         updatedProduct.qty = updatedProduct.qty + 1;
-        cart.products = [...cart.products];
         cart.products[existingProductIndex] = updatedProduct;
       } else {
+        // Add new product
         updatedProduct = { id: id, qty: 1 };
         cart.products = [...cart.products, updatedProduct];
       }
-      cart.totalPrice = cart.totalPrice + +productPrice;
-      fs.writeFile(p, JSON.stringify(cart), err => {
+
+      cart.totalPrice = cart.totalPrice + Number(productPrice);
+
+      fs.writeFile(p, JSON.stringify(cart), (err) => {
         console.log(err);
       });
     });
@@ -43,19 +45,21 @@ module.exports = class Cart {
       if (err) {
         return;
       }
-      const updatedCart = { ...JSON.parse(fileContent) };
-      const product = updatedCart.products.find(prod => prod.id === id);
-      if (!product) {
-          return;
-      }
-      const productQty = product.qty;
-      updatedCart.products = updatedCart.products.filter(
-        prod => prod.id !== id
-      );
-      updatedCart.totalPrice =
-        updatedCart.totalPrice - productPrice * productQty;
 
-      fs.writeFile(p, JSON.stringify(updatedCart), err => {
+      const cart = { ...JSON.parse(fileContent) };
+
+      const productToRemove = cart.products.find((p) => p.id === id);
+      if (!productToRemove) {
+        return;
+      }
+
+      const productQty = productToRemove.qty;
+
+      cart.products = cart.products.filter((p) => p.id !== id);
+
+      cart.totalPrice = cart.totalPrice - productPrice * productQty;
+
+      fs.writeFile(p, JSON.stringify(cart), (err) => {
         console.log(err);
       });
     });
