@@ -1,1 +1,23 @@
-[{"id":"123245","title":"A Book","imageUrl":"https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg","description":"This is an awesome book!","price":"19"},{"id":"0.41607315815753076","title":"fasfd","imageUrl":"fdasfs","description":"fadsfads","price":"12"}]
+[
+  {
+    "id": "0.3558465742763288",
+    "title": "egyptian clothes",
+    "imageUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%3Fid%3DOIP.pBprlyoNTqKPI9l83MEkwQHaHg%26pid%3DApi&f=1",
+    "description": "egyptian clothes oldies",
+    "price": "5000"
+  },
+  {
+    "id": "0.9192428199675333",
+    "title": "A Book super 2",
+    "imageUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.SMHqPDDzlwLoh4_ROuTRbgHaGD%26pid%3DApi&f=1",
+    "description": "sjsjs",
+    "price": "56077"
+  },
+  {
+    "id": "0.3595082589166796",
+    "title": "a televiser $$",
+    "imageUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%3Fid%3DOIP.-SQChcPPL6S-l-kqH1xTeQHaHa%26pid%3DApi&f=1",
+    "description": "azertyuiop\r\nqwertyhjklm\r\ntelevisoin",
+    "price": "1435"
+  }
+]
