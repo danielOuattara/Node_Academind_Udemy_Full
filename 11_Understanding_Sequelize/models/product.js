@@ -1,12 +1,12 @@
-const Sequelize = require('sequelize') 
-const sequelize = require('./../utils/database');
+const { Sequelize } = require("sequelize");
+const sequelize = require("./../utils/database");
 
-const Product = sequelize.define('product', {
+const Product = sequelize.define("product", {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,
-    primaryKey: true
+    primaryKey: true,
   },
   title: {
     type: Sequelize.STRING,
@@ -23,7 +23,7 @@ const Product = sequelize.define('product', {
   imageUrl: {
     type: Sequelize.STRING,
     allowNull: false,
-  }
+  },
 });
 
 module.exports = Product;
