@@ -8,6 +8,11 @@ const Cart = sequelize.define("cart", {
     allowNull: false,
     primaryKey: true,
   },
+  amount: {
+    type: Sequelize.DOUBLE,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });
 
 module.exports = Cart;

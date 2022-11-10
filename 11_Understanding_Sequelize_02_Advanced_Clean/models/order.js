@@ -8,6 +8,11 @@ const Order = sequelize.define("order", {
     allowNull: false,
     primaryKey: true,
   },
+  amount: {
+    type: Sequelize.DOUBLE,
+    allowNull: false,
+    defaultValue: 0,
+  },
 });
 
 module.exports = Order;

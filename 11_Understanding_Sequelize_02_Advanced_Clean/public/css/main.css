@@ -22,11 +22,17 @@ form {
 .centered {
   text-align: center;
 }
-.image{
-  max-height:20rem;
+
+.total-amount {
+  font-size: 2rem;
 }
-.image img{
-  height:100%;
+
+.image {
+  max-height: 20rem;
+}
+
+.image img {
+  height: 100%;
 }
 
 .main-header {

@@ -28,7 +28,7 @@ So, "user" here is not a simple javascript object
 */
 
 app.use((req, res, next) => {
-  User.findByPk(1) // change the number to target a specific user
+  User.findByPk(3) // change the number to target a specific user
     .then((user) => {
       req.user = user;
       next();
@@ -98,7 +98,9 @@ Product.belongsToMany(Order, { through: OrderItem });
 //---------------------------------------------------------
 
 sequelize
-  .sync({})
+  .sync({
+    /* force: true  */
+  })
   .then(() => User.findAll())
   .then((users) => {
     if (users.length === 0) {
