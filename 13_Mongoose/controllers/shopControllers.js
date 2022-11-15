@@ -49,7 +49,7 @@ exports.getCart = (req, res, next) => {
   req.user
     .populate("cart.items.productId")
     .then((user) => {
-      // console.log(user);
+      // console.log(user.cart.items);
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
@@ -88,6 +88,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 //---------------------------------------------------------------
 
 exports.postOrder = (req, res, next) => {
+  console.log("req.user (native) = ", req.user.toString());
   req.user
     .populate("cart.items.productId")
     .then((user) => {
@@ -97,6 +98,7 @@ exports.postOrder = (req, res, next) => {
           product: { ...item.productId },
         };
       });
+
       const orders = new Order({
         user: {
           name: req.user.name,

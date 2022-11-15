@@ -142,7 +142,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static("public"));
 
 app.use((req, res, next) => {
-  User.findById("6373863da0a6a98f3fd2503c") // user manually created in Compass
+  User.findById("6373863da0a6a98f3fd2503e") // user manually created in Compass
     .then((user) => {
       req.user = user;
       // console.log("user = ", user);
@@ -180,8 +180,8 @@ mongoose
       return users;
     }
   })
-  .then((users) => {
-    app.listen(3000);
+  .then(() => {
+    return app.listen(3000);
   })
-  .then(() => console.log("App is running over http://localhost:3000/ OK ?"))
+  .then(() => console.log("App is running over http://localhost:3000/"))
   .catch((err) => console.log(err));
