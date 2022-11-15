@@ -19,7 +19,6 @@ exports.getAddProduct = (req, res, next) => {
 // };
 //---
 exports.postAddProduct = (req, res, next) => {
-  console.log(req.user);
   Product.create({ ...req.body, userId: req.user._id })
     .then(() => res.redirect("/admin/products"))
     .catch((err) => console.log(err));
@@ -58,7 +57,7 @@ exports.postEditProduct = (req, res, next) => {
 
 //---------------------------------------------------------------
 exports.getProducts = (req, res, next) => {
-  Product.find({})
+  Product.find({ userId: req.user._id })
     // .select('title price -_id')
     // .populate('userId', 'name')
     .then((products) => {

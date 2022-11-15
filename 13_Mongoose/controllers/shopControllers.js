@@ -2,13 +2,13 @@ const Product = require("../models/productModel");
 const Order = require("../models/orderModel");
 
 //---------------------------------------------------------------
-exports.getProducts = (req, res, next) => {
+exports.getIndex = (req, res, next) => {
   Product.find({})
     .then((products) => {
-      res.render("shop/product-list", {
+      res.render("shop/index", {
         prods: products,
-        pageTitle: "All Products",
-        path: "/products",
+        pageTitle: "Shop",
+        path: "/",
       });
     })
     .catch((err) => {
@@ -17,13 +17,13 @@ exports.getProducts = (req, res, next) => {
 };
 
 //---------------------------------------------------------------
-exports.getIndex = (req, res, next) => {
+exports.getProducts = (req, res, next) => {
   Product.find({})
     .then((products) => {
-      res.render("shop/index", {
+      res.render("shop/product-list", {
         prods: products,
-        pageTitle: "Shop",
-        path: "/",
+        pageTitle: "All Products",
+        path: "/products",
       });
     })
     .catch((err) => {

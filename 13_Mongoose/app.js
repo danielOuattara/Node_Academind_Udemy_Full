@@ -145,7 +145,7 @@ app.use((req, res, next) => {
   User.findById("6373863da0a6a98f3fd2503c") // user manually created in Compass
     .then((user) => {
       req.user = user;
-      console.log("user = ", user);
+      // console.log("user = ", user);
       // Allows to access all method and properties available through assiociation
       next();
     })
