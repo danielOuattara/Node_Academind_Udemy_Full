@@ -1,29 +1,29 @@
-
-const MongoClient = require('mongodb').MongoClient;
+const { MongoClient } = require("mongodb");
 
 let _db;
 
+//---------------------------------------------------------
 const mongoConnect = (cb) => {
   MongoClient.connect(process.env.MONGO_URI)
-    .then( client => {
-      console.log('Connexion Successfull to MongoDB Atlas !');
+    .then((client) => {
       _db = client.db();
+      console.log("Connexion Successfull to MongoDB Atlas !");
       cb();
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       throw err;
     });
-}
+};
 
+//----------------------------------------------------------
 const getDb = () => {
-  if(!_db) {
-    throw 'No database Found !';
+  if (_db) {
+    return _db;
   }
-  return _db;
-}
+  throw "No database Found !";
+};
 
-exports.mongoConnect = mongoConnect;
-exports.getDb = getDb;
-// module.exports = mongoConnect;
-// module.exports = getDb;
+//----------------------------------------------------------
+
+module.exports = { getDb, mongoConnect };
