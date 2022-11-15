@@ -78,7 +78,7 @@
 // app.use((req, res, next) => {
 //   User.findById("6373863da0a6a98f3fd2503c") // user manually created in Compass
 //     .then((user) => {
-//       req.user = new User(user.name, user.email, user.cart, user._id);
+//       req.user = user;
 //       console.log("user = ", user);
 //       // Allows to access all method and properties available through assiociation
 //       next();
@@ -126,12 +126,12 @@
 
 require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
 const User = require("./models/userModel");
 const adminRoutes = require("./routes/adminRoutes");
 const shopRoutes = require("./routes/shopRoutes");
 const errorControllers = require("./controllers/errorControllers");
 const usersTestData = require("./data/usersTest.json");
-const { default: mongoose } = require("mongoose");
 
 const app = express();
 
@@ -144,9 +144,7 @@ app.use(express.static("public"));
 app.use((req, res, next) => {
   User.findById("6373863da0a6a98f3fd2503c") // user manually created in Compass
     .then((user) => {
-      // console.log("user = ", user);
-      // req.user = user;
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      req.user = user;
       console.log("user = ", user);
       // Allows to access all method and properties available through assiociation
       next();
@@ -156,12 +154,12 @@ app.use((req, res, next) => {
 
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
-
 app.use(errorControllers.get404);
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
+    console.log("Connexion Successfull to MongoDB Atlas !");
     return User.find();
   })
   .then((users) => {
@@ -183,8 +181,7 @@ mongoose
     }
   })
   .then((users) => {
-    console.log("users = ", users);
     app.listen(3000);
   })
-  .then(() => console.log("App is running over http://localhost:3000/"))
+  .then(() => console.log("App is running over http://localhost:3000/ OK ?"))
   .catch((err) => console.log(err));
