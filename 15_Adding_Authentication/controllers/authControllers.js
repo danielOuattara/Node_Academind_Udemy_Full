@@ -1,4 +1,4 @@
-const User = require("./../models/user");
+const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
 
 //------------------------------------------------------------------
@@ -20,12 +20,17 @@ exports.getSignup = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((userExist) => {
-      if (userExist) { //  ERROR: email is already used !
-        req.flash("error", "E-Mail exists already, please pick a different one.");
+      if (userExist) {
+        //  ERROR: email is already used !
+        req.flash(
+          "error",
+          "E-Mail exists already, please pick a different one.",
+        );
         return res.redirect("/signup");
       }
 
-      bcryptjs.hash(req.body.password, 11)
+      bcryptjs
+        .hash(req.body.password, 11)
         .then((hashedPassword) => {
           const user = new User({
             email: req.body.email,
@@ -60,13 +65,15 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
-      if (!user) { // user not found in DB
+      if (!user) {
+        // user not found in DB
         req.flash("error", "Invalid email OR password");
-        console.log("User not found")
+        console.log("User not found");
         return res.redirect("/login");
       }
 
-      bcryptjs.compare(req.body.password, user.password)
+      bcryptjs
+        .compare(req.body.password, user.password)
         .then((doMatch) => {
           if (!doMatch) {
             req.flash("ErrorLogin", "Invalid email OR password");

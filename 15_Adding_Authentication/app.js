@@ -2,12 +2,12 @@ require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
-const errorController = require("./controllers/error");
+const errorController = require("./controllers/errorControllers");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const isAuth = require("./middlewares/isAuth");
 const csrf = require("csurf");
-const User = require("./models/user");
+const User = require("./models/userModel");
 const flash = require("connect-flash");
 
 const app = express();
@@ -22,9 +22,9 @@ const csrfProtection = csrf({}); // creating the middleware protection
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-const authRoutes = require("./routes/auth");
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
+const authRoutes = require("./routes/authRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+const shopRoutes = require("./routes/shopRoutes");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
@@ -34,7 +34,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
-  })
+  }),
 );
 
 app.use(csrfProtection); // using the middleware protection, must be placed after a session
@@ -70,7 +70,7 @@ mongoose
   .then(() => {
     console.log("Connected to MongoDB Database: success !");
     app.listen(3000, () =>
-      console.log("App is running on port http://localhost:3000/")
+      console.log("App is running on port http://localhost:3000/"),
     );
   })
   .catch((err) => console.log(err));
