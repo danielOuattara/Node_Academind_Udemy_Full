@@ -1,8 +1,8 @@
 const crypto = require("crypto"); // Node.js native module
 const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
-const nodemailer = require("nodemailer");
 
+const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   host: process.env.HOST,
   port: 465,
@@ -14,7 +14,7 @@ const transporter = nodemailer.createTransport({
 });
 
 //------------------------------------------------------------------
-exports.getSignup = (req, res, next) => {
+exports.getSignup = (req, res) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -29,7 +29,7 @@ exports.getSignup = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.postSignup = (req, res, next) => {
+exports.postSignup = (req, res) => {
   User.findOne({ email: req.body.email })
     .then((userExist) => {
       if (userExist) {
@@ -52,6 +52,7 @@ exports.postSignup = (req, res, next) => {
           return user.save();
         })
         .then(() => {
+          res.redirect("/login");
           return transporter.sendMail(
             {
               from: process.env.ADMIN_EMAIL,
@@ -75,7 +76,7 @@ exports.postSignup = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.getLogin = (req, res, next) => {
+exports.getLogin = (req, res) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -90,7 +91,7 @@ exports.getLogin = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.postLogin = (req, res, next) => {
+exports.postLogin = (req, res) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
