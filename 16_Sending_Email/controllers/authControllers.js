@@ -1,5 +1,5 @@
 const crypto = require("crypto"); // Node.js native module
-const User = require("./../models/user");
+const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 
@@ -36,7 +36,7 @@ exports.postSignup = (req, res, next) => {
         //  ERROR: email is already used !
         req.flash(
           "error",
-          "E-Mail exists already, please pick a different one."
+          "E-Mail exists already, please pick a different one.",
         );
         return res.redirect("/signup");
       }
@@ -66,7 +66,7 @@ exports.postSignup = (req, res, next) => {
               } else {
                 console.log("Email sent: " + info.response);
               }
-            }
+            },
           );
         })
         .catch((error) => console.log(error));
@@ -195,7 +195,7 @@ exports.postResetPassword = (req, res, next) => {
               } else {
                 console.log("Email sent: " + info.response);
               }
-            }
+            },
           );
         });
       });
@@ -206,4 +206,3 @@ exports.postResetPassword = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-
