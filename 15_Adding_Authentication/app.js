@@ -3,11 +3,11 @@ const path = require("path");
 const express = require("express");
 const mongoose = require("mongoose");
 const errorController = require("./controllers/errorControllers");
+const User = require("./models/userModel");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const isAuth = require("./middlewares/isAuth");
 const csrf = require("csurf");
-const User = require("./models/userModel");
 const flash = require("connect-flash");
 
 const app = express();
@@ -36,7 +36,6 @@ app.use(
     store: store,
   }),
 );
-
 app.use(csrfProtection); // using the middleware protection, must be placed after a session
 app.use(flash());
 
@@ -46,7 +45,7 @@ app.use((req, res, next) => {
   }
   User.findById(req.session.user._id)
     .then((user) => {
-      req.user = user; // here user is a full mongoose model: with all method and properties
+      req.user = user; // here user is a full mongoose model: with all method ands properties
       next();
     })
     .catch((err) => console.log(err));
@@ -62,7 +61,6 @@ app.use((req, res, next) => {
 app.use("/admin", isAuth, adminRoutes);
 app.use(authRoutes);
 app.use(shopRoutes);
-
 app.use(errorController.get404);
 
 mongoose

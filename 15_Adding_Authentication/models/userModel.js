@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: true,
+    required: [true, "Valid Email is required"],
+    unique: [true, "Email is taken, please choose another one"],
   },
   password: {
     type: String,
-    required: true,
+    required: [true, "Password is required"],
   },
   cart: {
     items: [
