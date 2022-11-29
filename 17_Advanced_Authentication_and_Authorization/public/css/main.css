@@ -238,7 +238,6 @@ form {
   border: 1px solid #4771fa;
   padding: 0.5rem;
   border-radius: 3px;
-  background: #b9c9ff;
   text-align: center;
 }
 
@@ -246,6 +245,12 @@ form {
   border-color: red;
   background: rgb(255, 176, 176);
   color: red;
+}
+
+.user-message--info {
+  border-color: blue;
+  /* background: rgb(114, 172, 248); */
+  color: blue;
 }
 
 @media (min-width: 768px) {
