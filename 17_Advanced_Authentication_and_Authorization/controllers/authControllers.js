@@ -83,10 +83,17 @@ exports.getLogin = (req, res) => {
   } else {
     message = null;
   }
+  let infoMessage = req.flash("info");
+  if (infoMessage.length > 0) {
+    infoMessage = infoMessage[0];
+  } else {
+    infoMessage = null;
+  }
   res.render("auth/login", {
     pageTitle: "Login Page",
     path: "/login",
     errorMessage: message,
+    infoMessage,
   });
 };
 
@@ -149,63 +156,136 @@ exports.getResetPassword = (req, res) => {
 };
 
 //------------------------------------------------------------------
-// .then.catch()
-exports.postResetPassword = (req, res) => {
-  if (!req.body.email) {
+// async/await: function called on "reset Password" button clicked
+exports.postResetPassword = async (req, res) => {
+  try {
     // check email provided !
-    req.flash("error", "Invalid email OR password");
-    return res.redirect("/login");
-  }
+    if (!req.body.email) {
+      req.flash(
+        "error",
+        "Please provide a valid email for resetting your password",
+      );
+      return res.redirect("/reset");
+    }
 
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (!user) {
-        // user not found in DB
-        req.flash("error", "Invalid email OR password");
-        return res.redirect("/login");
+    const user = await User.findOne({ email: req.body.email });
+    // user not found in DB
+    if (!user) {
+      req.flash(
+        "info",
+        "Check your email box for more instructions to reset your password",
+      );
+      return res.redirect("/login");
+    }
+    let token;
+    // generate a Token
+    crypto.randomBytes(16, (err, buffer) => {
+      if (err) {
+        req.flash("error", `${err.message}`);
+        console.log(err);
+        return res.redirect("/reset");
       }
-
-      crypto.randomBytes(16, (err, buffer) => {
-        // generate a Token
-        if (err) {
-          req.flash("error", "Invalid email OR password");
-          console.log(err);
-          return res.redirect("/reset");
-        }
-        const token = buffer.toString("hex");
-        user.resetPasswordToken = token;
-        const limitTime = 10; // minutes
-        user.resetPasswordTokenExpiration = Date.now() + limitTime * 60 * 1000;
-        user.save().then(() => {
-          res.redirect("/login");
-          return transporter.sendMail(
-            {
-              from: process.env.ADMIN_EMAIL,
-              to: req.body.email,
-              subject: "Password reset !",
-              html: `
+      token = buffer.toString("hex");
+    });
+    user.resetPasswordToken = token;
+    const limitTime = 10; // minutes
+    user.resetPasswordTokenExpiration = Date.now() + limitTime * 60 * 1000;
+    await user.save();
+    req.flash(
+      "info",
+      "Check your email box for more instructions to reset your password",
+    );
+    res.redirect("/login");
+    await transporter.sendMail(
+      {
+        from: process.env.ADMIN_EMAIL,
+        to: req.body.email,
+        subject: "Password reset !",
+        html: `
             <h1> Password Reset !
             Welcome ${req.body.email} </h1>
             <p>You request a password rest</p>
             <p>Click <a href="http://localhost:3000/reset/${token}">Reset Password</a> to reset your password</p>
             <p>You have ${limitTime} minutes to reset your password.</p>
             <p>Thank you.</p>`,
-            },
-            function (error, info) {
-              if (error) {
-                console.log("EMAIL ERROR", error);
-              } else {
-                console.log("Email sent: " + info.response);
-              }
-            },
-          );
-        });
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+      },
+      function (error, info) {
+        if (error) {
+          console.log("EMAIL ERROR", error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      },
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };
+// //------------------------------------------------------------------
+// // .then.catch(): function called on "reset Password" button clicked
+// // OK!
+// exports.postResetPassword = (req, res) => {
+//   if (!req.body.email) {
+//     // check email provided !
+//     req.flash(
+//       "error",
+//       "Please provide a valid email for resetting your password",
+//     );
+//     return res.redirect("/reset");
+//   }
+
+//   User.findOne({ email: req.body.email })
+//     .then((user) => {
+//       if (!user) {
+//         // user not found in DB
+//         req.flash(
+//           "info",
+//           "Check your email box for more instructions to reset your password",
+//         );
+//         return res.redirect("/login");
+//       }
+
+//       crypto.randomBytes(16, (err, buffer) => {
+//         // generate a Token
+//         if (err) {
+//           req.flash("error", `${err.message}`);
+//           console.log(err);
+//           return res.redirect("/reset");
+//         }
+//         const token = buffer.toString("hex");
+//         user.resetPasswordToken = token;
+//         const limitTime = 10; // minutes
+//         user.resetPasswordTokenExpiration = Date.now() + limitTime * 60 * 1000;
+//         user.save().then(() => {
+//           res.redirect("/login");
+//           return transporter.sendMail(
+//             {
+//               from: process.env.ADMIN_EMAIL,
+//               to: req.body.email,
+//               subject: "Password reset !",
+//               html: `
+//             <h1> Password Reset !
+//             Welcome ${req.body.email} </h1>
+//             <p>You request a password rest</p>
+//             <p>Click <a href="http://localhost:3000/reset/${token}">Reset Password</a> to reset your password</p>
+//             <p>You have ${limitTime} minutes to reset your password.</p>
+//             <p>Thank you.</p>`,
+//             },
+//             function (error, info) {
+//               if (error) {
+//                 console.log("EMAIL ERROR", error);
+//               } else {
+//                 console.log("Email sent: " + info.response);
+//               }
+//             },
+//           );
+//         });
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// };
 
 //------------------------------------------------------------------
 exports.getRenewPassword = (req, res) => {
