@@ -1,11 +1,10 @@
-const { get } = require("mongoose");
-const User = require("./../models/user");
+const User = require("../models/userModel");
 
 /* session authentication 
 ---------------------------- */
 
 //------------------------------------------------------------------
-exports.getLogin = (req, res, next) => {
+exports.getLogin = (req, res) => {
   res.render("auth/login", {
     pageTitle: "Login Page",
     path: "/login",
@@ -14,14 +13,14 @@ exports.getLogin = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.postLogin = (req, res, next) => {
-  User.findById("62736e534df7769a3f585095")
+exports.postLogin = (req, res) => {
+  User.findById("6385b5c6596218c2921e592a")
     .then((user) => {
-      // here user is NOT a full mongoose model: Not all methods and properties
       req.session.isLoggedIn = true;
+      // here user is NOT a full mongoose model: Not all methods and properties
       req.session.user = user;
       req.session.save((err) => {
-        console.log(err);
+        if (err) console.log(err);
         res.redirect("/");
       });
     })
@@ -29,7 +28,7 @@ exports.postLogin = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.postLogout = (req, res, next) => {
+exports.postLogout = (req, res) => {
   req.session.destroy((err) => {
     if (err) console.log(err);
     res.redirect("/");

@@ -19,14 +19,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
-    secret: "my secret string",
+    secret: process.env.EXPRESS_SESSION,
     resave: false,
     saveUninitialized: false,
-  })
+  }),
 );
 
 app.use((req, res, next) => {
-  User.findById("62736e534df7769a3f585095")
+  User.findById("6284953788670f63dd891915")
     .then((user) => {
       req.user = user; // here user is a full mongoose model: with all method and properties
       next();
@@ -59,7 +59,7 @@ mongoose
       .catch((err) => console.log(err));
     console.log("Connected to MongoDB Database: success !");
     app.listen(3000, () =>
-      console.log("App is running on port http://localhost:3000/")
+      console.log("App is running on port http://localhost:3000/"),
     );
   })
   .catch((err) => console.log(err));
