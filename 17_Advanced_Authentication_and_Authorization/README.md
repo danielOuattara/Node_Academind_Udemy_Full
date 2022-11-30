@@ -1,8 +1,10 @@
-## Run this part ?
-<p>copie the .env.txt to a new .env file; then update content of the .env.txt file to your credentiels from MongoDB Atlas</p>
-<p>npm install & npm start</p>
 
-<image src="https://github.com/danielOuattara/Node_Academind_Udemy_Full/blob/master/17_Advanced_Authentication_and_Authorization/images/signup_success.png" alt="signup success" width="600px">
+## What is done here ?
+<p>In this part I take care of password reset.</p>
+
+## How to run this part ?
+<p>copie the .env.txt to a new .env file; then update content of the .env.txt file to your credentiels from MongoDB Atlas</p>
+<p>npm install & npm start.</p>
   
 <image src="https://github.com/danielOuattara/Node_Academind_Udemy_Full/blob/master/17_Advanced_Authentication_and_Authorization/images/login_vue.png" alt="login" width="600px">
   
