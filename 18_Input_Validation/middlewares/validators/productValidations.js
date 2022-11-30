@@ -1,5 +1,4 @@
 const { body } = require("express-validator");
-const User = require("../../models/user");
 
 const productValidate = [
   body("title").isLength({ min: 3 }).trim(),

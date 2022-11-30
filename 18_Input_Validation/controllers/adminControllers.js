@@ -1,8 +1,8 @@
-const Product = require("./../models/product");
+const Product = require("../models/productModel");
 const { validationResult } = require("express-validator");
 
 //---------------------------------------------------------------
-exports.getAddProduct = (req, res, next) => {
+exports.getAddProduct = (req, res) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -26,7 +26,7 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 //---------------------------------------------------------------
-exports.postAddProduct = (req, res, next) => {
+exports.postAddProduct = (req, res) => {
   /* validations are made in the previous middleware 
   (prodcutValidate, see admin routes) but the results of 
   that validations are handled just below, before 
@@ -62,7 +62,7 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 //---------------------------------------------------------------
-exports.getEditProduct = (req, res, next) => {
+exports.getEditProduct = (req, res) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -94,7 +94,7 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 //---------------------------------------------------------------
-exports.postEditProduct = (req, res, next) => {
+exports.postEditProduct = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
@@ -128,7 +128,7 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 //---------------------------------------------------------------
-exports.getProducts = (req, res, next) => {
+exports.getProducts = (req, res) => {
   Product.find({ userId: req.session.user._id })
     // .select('title price -_id')
     // .populate('userId', 'name')
@@ -143,7 +143,7 @@ exports.getProducts = (req, res, next) => {
 };
 
 //---------------------------------------------------------------
-exports.postDeleteProduct = (req, res, next) => {
+exports.postDeleteProduct = (req, res) => {
   Product.findOneAndDelete({ _id: req.body.productId, userId: req.user._id })
     .then(() => res.redirect("/admin/products"))
     .catch((err) => {

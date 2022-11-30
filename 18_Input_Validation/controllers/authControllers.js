@@ -1,5 +1,5 @@
 const crypto = require("crypto"); // Node.js native module
-const User = require("./../models/user");
+const User = require("../models/userModel");
 const bcryptjs = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const { validationResult } = require("express-validator");
@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 });
 
 //------------------------------------------------------------------
-exports.getSignup = (req, res, next) => {
+exports.getSignup = (req, res) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -36,7 +36,7 @@ exports.getSignup = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.postSignup = (req, res, next) => {
+exports.postSignup = (req, res) => {
   /* validations are made in the previous middleware 
   (signUpValidation, see auth routes) but the results of 
   that validations are handled just below, before 
@@ -92,7 +92,7 @@ exports.postSignup = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.getLogin = (req, res, next) => {
+exports.getLogin = (req, res) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -111,7 +111,7 @@ exports.getLogin = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.postLogin = (req, res, next) => {
+exports.postLogin = (req, res) => {
   /* validations are made in the previous middleware 
   (loginValidation, see auth routes) but the results of 
   that validations are handled just below, before 
@@ -159,7 +159,7 @@ exports.postLogin = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.postLogout = (req, res, next) => {
+exports.postLogout = (req, res) => {
   req.session.destroy((err) => {
     if (err) console.log(err);
     res.redirect("/");
@@ -167,7 +167,7 @@ exports.postLogout = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.getResetPassword = (req, res, next) => {
+exports.getResetPassword = (req, res) => {
   let message = req.flash("error");
   if (message.length > 0) {
     message = message[0];
@@ -183,7 +183,7 @@ exports.getResetPassword = (req, res, next) => {
 
 //------------------------------------------------------------------
 // .then.catch()
-exports.postResetPassword = (req, res, next) => {
+exports.postResetPassword = (req, res) => {
   if (!req.body.email) {
     // check email provided !
     req.flash("error", "Invalid email OR password");
@@ -241,7 +241,7 @@ exports.postResetPassword = (req, res, next) => {
 };
 
 //------------------------------------------------------------------
-exports.getRenewPassword = (req, res, next) => {
+exports.getRenewPassword = (req, res) => {
   User.findOne({
     resetPasswordToken: req.params.token,
     resetPasswordTokenExpiration: { $gt: Date.now() },
@@ -271,7 +271,7 @@ exports.getRenewPassword = (req, res, next) => {
 
 //---------------------------------------------------------------------------
 
-exports.postRenewPassword = (req, res, next) => {
+exports.postRenewPassword = (req, res) => {
   User.findOne({
     resetPasswordToken: req.body.passwordToken,
     resetPasswordTokenExpiration: { $gt: Date.now() },

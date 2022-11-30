@@ -1,8 +1,8 @@
 const path = require("path");
 const express = require("express");
-const adminController = require("../controllers/admin");
+const adminController = require("../controllers/adminControllers");
 const router = express.Router();
-const { productValidate } = require("./../middlewares/validators");
+const { productValidate } = require("../middlewares/validators");
 
 // /admin/add-product => GET
 router.get("/add-product", adminController.getAddProduct);
