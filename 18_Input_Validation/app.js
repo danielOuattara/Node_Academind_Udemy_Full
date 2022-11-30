@@ -36,13 +36,14 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
-  })
+  }),
 );
 
 app.use(csrfProtection); // using the middleware protection, must be placed after a session
 app.use(flash()); // for flash message, TODO: continue read the doc
 
-app.use((req, res, next) => {  // 
+app.use((req, res, next) => {
+  //
   if (!req.session.user) {
     return next();
   }
@@ -67,11 +68,12 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Connected to MongoDB Database: success !");
     app.listen(3000, () =>
-      console.log("App is running on port http://localhost:3000/")
+      console.log("App is running on port http://localhost:3000/"),
     );
   })
   .catch((err) => console.log(err));

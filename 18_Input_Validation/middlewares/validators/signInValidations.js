@@ -15,7 +15,7 @@ const signInValidate = [
       return User.findOne({ email: req.body.email }).then((user) => {
         if (user) {
           return Promise.reject(
-            "E-Mail exists already, please pick a different one."
+            "E-Mail exists already, please pick a different one.",
           );
         }
       });

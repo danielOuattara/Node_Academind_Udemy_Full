@@ -118,7 +118,7 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findOneAndUpdate(
     { _id: req.body.productId, userId: req.user._id },
-    req.body
+    req.body,
   )
     .then(() => res.redirect("/admin/products"))
     .catch((err) => {
