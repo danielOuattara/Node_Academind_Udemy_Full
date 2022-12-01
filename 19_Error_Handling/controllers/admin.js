@@ -48,16 +48,11 @@ exports.postAddProduct = (req, res, next) => {
         description: req.body.description,
       },
       errorMessage: errors.array()[0].msg,
-      // errorMessage: "Background Error, please try again. ",
       validationsErrorsArray: errors.array(),
     });
   }
 
-  const product = new Product({
-    ...req.body,
-    // _id: new mongoose.Types.ObjectId("62127891c8d0868d8450f3a6"),
-    userId: req.user._id,
-  });
+  const product = new Product({ ...req.body, userId: req.user._id });
   product
     .save()
     .then(() => res.redirect("/admin/products"))
@@ -82,7 +77,7 @@ exports.postAddProduct = (req, res, next) => {
       // });
 
       /* 2- This code handle error in a new page, but you need 
-      to duplicate it every where eror could occurs
+      to duplicate it every where error could occurs
       ---------------------------------------------------- */
 
       // return res.status(500).render("500", {
@@ -95,7 +90,7 @@ exports.postAddProduct = (req, res, next) => {
       /* 3-  Better solution to avoid code repetitions 
       -----------------------------------------------*/
       const error = new Error(err);
-      error.httStatusCode = 500;
+      error.httpStatusCode = 500;
       return next(error);
     });
 };
@@ -161,7 +156,7 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findOneAndUpdate(
     { _id: req.body.productId, userId: req.user._id },
-    req.body
+    req.body,
   )
     .then(() => res.redirect("/admin/products"))
     .catch((err) => {

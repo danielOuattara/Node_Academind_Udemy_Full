@@ -85,7 +85,7 @@ exports.postSignup = (req, res, next) => {
           } else {
             console.log("Email sent: " + info.response);
           }
-        }
+        },
       );
     })
     .catch((err) => {
@@ -141,7 +141,7 @@ exports.postLogin = (req, res, next) => {
         .compare(req.body.password, user.password)
         .then((doMatch) => {
           if (!doMatch) {
-            req.flash("ErrorLogin", "Invalid email OR password");
+            req.flash("error", "Invalid email OR password");
             return res.redirect("/login");
           }
 
@@ -240,7 +240,7 @@ exports.postResetPassword = (req, res, next) => {
               } else {
                 console.log("Email sent: " + info.response);
               }
-            }
+            },
           );
         });
       });
@@ -329,7 +329,7 @@ exports.postRenewPassword = (req, res, next) => {
               } else {
                 console.log("Email sent: " + info.response);
               }
-            }
+            },
           );
         })
         .catch((err) => console.log(err));
