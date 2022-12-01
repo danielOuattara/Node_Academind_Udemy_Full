@@ -14,14 +14,13 @@ exports.getAddProduct = (req, res) => {
     path: "/admin/add-product",
     editing: false,
     hasError: false,
-    errorMessage: message,
+    errorMessages: message,
     product: {
       title: "",
       imageUrl: "",
       price: "",
       description: "",
     },
-    validationsErrorsArray: [],
   });
 };
 
@@ -34,6 +33,7 @@ exports.postAddProduct = (req, res) => {
   */
 
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Admin Product",
@@ -46,8 +46,7 @@ exports.postAddProduct = (req, res) => {
         price: req.body.price,
         description: req.body.description,
       },
-      errorMessage: errors.array()[0].msg,
-      validationsErrorsArray: errors.array(),
+      errorMessages: errors.array(),
     });
   }
 
@@ -85,9 +84,7 @@ exports.getEditProduct = (req, res) => {
         editing: editMode,
         hasError: false,
         product: product,
-        errorMessage: message,
-        product,
-        validationsErrorsArray: [],
+        errorMessages: message,
       });
     })
     .catch((err) => console.log(err));
@@ -111,8 +108,7 @@ exports.postEditProduct = (req, res) => {
         price: req.body.price,
         description: req.body.description,
       },
-      errorMessage: errors.array()[0].msg,
-      validationsErrorsArray: errors.array(),
+      errorMessages: errors.array(),
     });
   }
 

@@ -1,11 +1,10 @@
 const { check, body } = require("express-validator");
 const User = require("./../../models/userModel");
 
-const signInValidate = [
+const signInValidations = [
   check("email")
     .isEmail()
-    .withMessage("Email address is Invalid / Missing")
-    // .normalizeEmail()
+    .withMessage("Email address is Invalid")
     .custom((value, { req }) => {
       if (value === "test@test.com") {
         throw new Error("Some words are forbidden as email parts");
@@ -36,4 +35,4 @@ const signInValidate = [
     }),
 ];
 
-module.exports = signInValidate;
+module.exports = signInValidations;

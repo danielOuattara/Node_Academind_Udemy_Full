@@ -5,32 +5,54 @@
 
 <body>
     <%- include('../includes/navigation.ejs') %>
+     <% let validationErrorsMessages= [] %> 
 
     <main>
-        <% if (errorMessage) { %>
-        <div class="user-message user-message--error"><%= errorMessage %></div>
-        <% } %>
-        <form class="login-form" action="/login" method="POST">
+        <% if (typeof errorMessages === "string") { %>
+            <div class="user-message user-message--error">
+                <%= errorMessages %>
+            </div>
+        <% } else if (Array.isArray(errorMessages)){ %>
+             <% validationErrorsMessages = errorMessages %> 
+            <div class="user-message user-message--error">
+                <ul>
+                    <% validationErrorsMessages.forEach(error => { %>
+                    <li>
+                        <%=error.msg%>
+                    </li>
+                    <%}) %>
+                </ul>
+            </div>
+        <%}%>
+
+        <form class="login-form" action="/login" method="POST" novalidate>
             <div class="form-control">
                 <label for="email">E-Mail</label>
-                <input type="email" name="email"
-                    class="<%= validationsErrorsArray.find(item => item.param === 'email') ? 'invalid': '' %>"
-                    id="email" value="<%= userInputs.email%>">
+                <input  type="email" 
+                        class="<%= validationErrorsMessages.find(item => item.param === 'email') ? 'invalid': '' %>" 
+                        value="<%= userPreviousInputs.email%>"
+                        name="email" 
+                        id="email">
             </div>
+
             <div class="form-control">
                 <label for="password">Password</label>
-                <input type="password" name="password"
-                    class="<%= validationsErrorsArray.find(item => item.param === 'password') ? 'invalid': '' %>"
-                    id="password">
+                <input  type="password" 
+                        class="<%= validationErrorsMessages.find(item => item.param === 'password') ? 'invalid': '' %>" 
+                        name="password" 
+                        id="password">
             </div>
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
             <button class="btn" type="submit">Login</button>
-        </form>
-        <div class="centered">
-            <p>
-                Password forgotten ?
-                <a class="<%= path === '/reset' ? 'active' : '' %>" href="/reset">Reset Password</a>
-            </p>
-        </div>
+
+            </form>
+            <div class="centered">
+                <p>
+                    Password forgotten ?
+                    <a class="<%= path === '/reset' ? 'active' : '' %>" href="/reset">Reset Password</a>
+                </p>
+            </div>
     </main>
     <%- include('../includes/end.ejs') %>

@@ -1,9 +1,9 @@
-const signInValidate = require("./signInValidations");
-const loginValidate = require("./loginValidations");
-const productValidate = require("./productValidations");
+const signInValidations = require("./signInValidations");
+const loginValidations = require("./loginValidations");
+const productValidations = require("./productValidations");
 
 module.exports = {
-  signInValidate,
-  loginValidate,
-  productValidate,
+  signInValidations,
+  loginValidations,
+  productValidations,
 };

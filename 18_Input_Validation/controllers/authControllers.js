@@ -25,22 +25,19 @@ exports.getSignup = (req, res) => {
   res.render("auth/signup", {
     pageTitle: "signup Page",
     path: "/signup",
-    errorMessage: message,
-    userInputs: {
+    errorMessages: message,
+    userPreviousInputs: {
       email: "",
-      // password: "",
-      // passwordConfirmation: "",
     },
-    validationsErrorsArray: [],
   });
 };
 
 //------------------------------------------------------------------
 exports.postSignup = (req, res) => {
-  /* validations are made in the previous middleware 
-  (signUpValidation, see auth routes) but the results of 
-  that validations are handled just below, before 
-  the signUp controller logic 
+  /* Validations are made in the previous middleware 
+  (signUpValidation, see authRoutes.js) but the results of 
+  those validations are handled just below, before the signUp 
+  controller logic 
   */
 
   const errors = validationResult(req);
@@ -49,13 +46,10 @@ exports.postSignup = (req, res) => {
     return res.status(422).render("auth/signup", {
       path: "/signup",
       pageTitle: "SignUp",
-      errorMessage: errors.array()[0].msg,
-      userInputs: {
+      errorMessages: errors.array(),
+      userPreviousInputs: {
         email: req.body.email,
-        // password: req.body.password,
-        // passwordConfirmation: req.body.passwordConfirmation,
       },
-      validationsErrorsArray: errors.array(),
     });
   }
 
@@ -102,11 +96,10 @@ exports.getLogin = (req, res) => {
   res.render("auth/login", {
     pageTitle: "Login Page",
     path: "/login",
-    errorMessage: message,
-    userInputs: {
+    errorMessages: message,
+    userPreviousInputs: {
       email: "",
     },
-    validationsErrorsArray: [],
   });
 };
 
@@ -120,14 +113,20 @@ exports.postLogin = (req, res) => {
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    function removeDuplicateErrorMessage(array, key) {
+      // remove duplicate error message
+      var check = new Set();
+      return array.filter((obj) => !check.has(obj[key]) && check.add(obj[key]));
+    }
+    const errorMessages = removeDuplicateErrorMessage(errors.array(), "msg");
+
     return res.status(422).render("auth/login", {
       path: "/login",
       pageTitle: "Login",
-      errorMessage: errors.array()[0].msg,
-      userInputs: {
+      errorMessages: errorMessages,
+      userPreviousInputs: {
         email: req.body.email,
       },
-      validationsErrorsArray: errors.array(),
     });
   }
 
@@ -137,7 +136,7 @@ exports.postLogin = (req, res) => {
         .compare(req.body.password, user.password)
         .then((doMatch) => {
           if (!doMatch) {
-            req.flash("ErrorLogin", "Invalid email OR password");
+            req.flash("error", "Invalid email OR password");
             return res.redirect("/login");
           }
 

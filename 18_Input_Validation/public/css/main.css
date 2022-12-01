@@ -234,17 +234,18 @@ form {
 
 .user-message {
   margin: auto;
+  text-align: left;
   width: 90%;
   border: 1px solid #4771fa;
   padding: 0.5rem;
+  padding-left: 1.25rem;
   border-radius: 3px;
   background: #b9c9ff;
-  text-align: center;
 }
 
 .user-message--error {
-  border-color: red;
-  background: rgb(255, 176, 176);
+  border-color: rgb(209, 0, 0);
+  background: rgb(255, 214, 214);
   color: red;
 }
 
