@@ -30,6 +30,12 @@ exports.getSignup = (req, res) => {
 
 //------------------------------------------------------------------
 exports.postSignup = (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    //  ERROR: !
+    req.flash("error", "no email OR no password provided");
+    return res.redirect("/signup");
+  }
+
   User.findOne({ email: req.body.email })
     .then((userExist) => {
       if (userExist) {
@@ -40,39 +46,149 @@ exports.postSignup = (req, res) => {
         );
         return res.redirect("/signup");
       }
-
-      bcryptjs
-        .hash(req.body.password, 11)
-        .then((hashedPassword) => {
-          const user = new User({
-            email: req.body.email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
-          return user.save();
-        })
-        .then(() => {
-          res.redirect("/login");
-          return transporter.sendMail(
-            {
-              from: process.env.ADMIN_EMAIL,
-              to: req.body.email,
-              subject: "Signup Successfull",
-              html: `<h1> Signup Successfull!
-            Welcome ${req.body.email} </h1>`,
-            },
-            function (error, info) {
-              if (error) {
-                console.log("EMAIL ERROR", error);
-              } else {
-                console.log("Email sent: " + info.response);
-              }
-            },
-          );
-        })
-        .catch((error) => console.log(error));
+      crypto.randomBytes(32, (err, buffer) => {
+        // generate a Token
+        if (err) {
+          req.flash("error", `${err.message}`);
+          console.log(err);
+          return res.redirect("/reset");
+        }
+        const token = buffer.toString("hex");
+        const limitTime = 10; // minutes
+        const tokenExpiration = Date.now() + limitTime * 60 * 1000;
+        res.redirect("/login");
+        return transporter.sendMail(
+          {
+            from: process.env.ADMIN_EMAIL,
+            to: req.body.email,
+            subject: "Sign Up Validation !",
+            html: `
+              <h1> Sign Up Validation  !
+              Welcome ${req.body.email} </h1>
+              <p>You must validate your email address.</p>
+              <p>Click <a href="http://localhost:${process.env.PORT}/signup-validate/${token}/${req.body.email}/${tokenExpiration}">Click Here</a> to validate your email</p>
+              <p>You have ${limitTime} minutes to reset your password.</p>
+              <p>Thank you.</p>`,
+          },
+          function (error, info) {
+            if (error) {
+              console.log("EMAIL ERROR", error);
+            } else {
+              console.log("Email sent: " + info.response);
+            }
+          },
+        );
+      });
     })
     .catch((err) => console.log(err));
+};
+// //------------------------------------------------------------------ OK ! BACK UP
+// exports.postSignup = (req, res) => {
+//   User.findOne({ email: req.body.email })
+//     .then((userExist) => {
+//       if (userExist) {
+//         //  ERROR: email is already used !
+//         req.flash(
+//           "error",
+//           "E-Mail exists already, please pick a different one.",
+//         );
+//         return res.redirect("/signup");
+//       }
+
+//       bcryptjs
+//         .hash(req.body.password, 11)
+//         .then((hashedPassword) => {
+//           const user = new User({
+//             email: req.body.email,
+//             password: hashedPassword,
+//             cart: { items: [] },
+//           });
+//           return user.save();
+//         })
+//         .then(() => {
+//           res.redirect("/login");
+//           return transporter.sendMail(
+//             {
+//               from: process.env.ADMIN_EMAIL,
+//               to: req.body.email,
+//               subject: "Signup Successfull",
+//               html: `<h1> Signup Successfull!
+//             Welcome ${req.body.email} </h1>`,
+//             },
+//             function (error, info) {
+//               if (error) {
+//                 console.log("EMAIL ERROR", error);
+//               } else {
+//                 console.log("Email sent: " + info.response);
+//               }
+//             },
+//           );
+//         })
+//         .catch((error) => console.log(error));
+//     })
+//     .catch((err) => console.log(err));
+// };
+
+//------------------------------------------------------------------
+exports.getSignupValidate = (req, res) => {
+  User.findOne({
+    resetPasswordToken: req.params.token,
+    resetPasswordTokenExpiration: { $gt: Date.now() },
+  })
+    .then((user) => {
+      if (!user) {
+        req.flash("error", "Invalid User, Try Again");
+        return res.redirect("/login");
+      }
+
+      let message = req.flash("error");
+      if (message.length > 0) {
+        message = message[0];
+      } else {
+        message = null;
+      }
+      res.render("auth/newPassword", {
+        pageTitle: "Renew Password",
+        path: "/reset",
+        errorMessage: message,
+        userId: user._id.toString(),
+        passwordToken: req.params.token,
+      });
+    })
+    .catch((error) => console.log(error));
+};
+//------------------------------------------------------------------
+exports.postSignupValidate = (req, res) => {
+  bcryptjs
+    .hash(req.body.password, 11)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: req.body.email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
+      return user.save();
+    })
+    .then(() => {
+      res.redirect("/login");
+      return transporter.sendMail(
+        {
+          from: process.env.ADMIN_EMAIL,
+          to: req.body.email,
+          subject: "Signup Successfull",
+          html: `<h1> Signup Successfull!
+            Welcome ${req.body.email} </h1>`,
+        },
+        function (error, info) {
+          if (error) {
+            console.log("EMAIL ERROR", error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        },
+      );
+    })
+    .catch((error) => console.log(error));
 };
 
 //------------------------------------------------------------------
