@@ -164,6 +164,8 @@ exports.getOrders = (req, res, next) => {
 
 //---------------------------------------------------------------
 
+// /* basic solution; not interseting for memory optimization: see next
+//-------------------------*/
 // exports.getInvoice = (req, res, next) => {
 //   Order.findById(req.params.orderId)
 //     .then((order) => {
@@ -184,7 +186,7 @@ exports.getOrders = (req, res, next) => {
 //         res.setHeader("Content-Type", "Application/pdf");
 //         res.setHeader(
 //           "Content-Disposition",
-//           "attachment; filename=" + invoiceName
+//           "attachment; filename=" + invoiceName,
 //         );
 //         res.send(data);
 //       });
@@ -192,10 +194,8 @@ exports.getOrders = (req, res, next) => {
 //     .catch((error) => next(error));
 // };
 
-//---------------------------------------------------------------
-
-// /* getInvoice: Stream file data
-// --------------------------------*/
+/* getInvoice: Stream file data
+--------------------------------*/
 // exports.getInvoice = (req, res, next) => {
 //   Order.findById(req.params.orderId)
 //     .then((order) => {
@@ -212,14 +212,12 @@ exports.getOrders = (req, res, next) => {
 //       res.setHeader("Content-Type", "Application/pdf");
 //       res.setHeader(
 //         "Content-Disposition",
-//         "attachment; filename=" + invoiceName
+//         "attachment; filename=" + invoiceName,
 //       );
 //       file.pipe(res);
 //     })
 //     .catch((error) => next(error));
 // };
-
-//---------------------------------------------------------------
 
 /* getInvoice: generate pdf file
 ---------------------------------*/
@@ -238,11 +236,9 @@ exports.getInvoice = (req, res, next) => {
 
       const pdfDoc = new PDFDocument();
       res.setHeader("Content-Type", "Application/pdf");
-      res.setHeader(
-        "Content-Disposition",
-        "attachment; filename=" + invoiceName
-      );
-      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      res.setHeader("Content-Disposition", "inline; filename=" + invoiceName);
+      const file = fs.createWriteStream(invoicePath);
+      pdfDoc.pipe(file);
       pdfDoc.pipe(res);
 
       pdfDoc.fontSize(18).text(`Invoice ${req.params.orderId}\n\n`, {
@@ -252,19 +248,21 @@ exports.getInvoice = (req, res, next) => {
       pdfDoc.fontSize(12).text(`Date:  ${new Date()}\n`);
       pdfDoc.fontSize(12).text(`Client-email : ${order.user.email} \n\n`);
 
-      pdfDoc.fontSize(14).text(`Items \n`);
+      pdfDoc
+        .fontSize(13)
+        .text(`Item:       Quantity     -       Price(Roubles)`);
 
       let totalPrice = 0;
       order.products.forEach((item) => {
         totalPrice += item.product.price * item.quantity;
         pdfDoc.text(
-          `${item.product.title}  - ${item.quantity} x ${item.product.price} Roubles  `
+          `${item.product.title}:         ${item.quantity} x      ${item.product.price} Roubles  `,
         );
       });
 
       pdfDoc.text(`\n _____________________ \n`);
 
-      pdfDoc.fontSize(18).text(`Total price : ${totalPrice} Roubles`);
+      pdfDoc.fontSize(16).text(`Total price : ${totalPrice} Roubles`);
       pdfDoc.end();
     })
     .catch((error) => next(error));

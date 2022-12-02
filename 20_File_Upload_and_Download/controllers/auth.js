@@ -85,7 +85,7 @@ exports.postSignup = (req, res, next) => {
           } else {
             console.log("Email sent: " + info.response);
           }
-        }
+        },
       );
     })
     .catch((err) => {
@@ -240,7 +240,7 @@ exports.postResetPassword = (req, res, next) => {
               } else {
                 console.log("Email sent: " + info.response);
               }
-            }
+            },
           );
         });
       });
@@ -329,7 +329,7 @@ exports.postRenewPassword = (req, res, next) => {
               } else {
                 console.log("Email sent: " + info.response);
               }
-            }
+            },
           );
         })
         .catch((err) => console.log(err));
