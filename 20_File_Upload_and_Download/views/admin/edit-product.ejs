@@ -15,45 +15,37 @@
             <div class="form-control">
                 <label for="title">Title</label>
                 <input class="<%= validationsErrorsArray.find(item => item.param === 'title') ? 'invalid': '' %>"
-                    type="text" 
-                    name="title" 
-                    id="title"
+                    type="text" name="title" id="title"
                     value="<% if (editing || hasError) { %><%= product.title %><% } %>">
             </div>
 
             <!-- backup -->
-            <!-- <div class="form-control">
+            <!-- 
+                <div class="form-control">
                 <label for="imageUrl">Image URL</label>
                 <input type="text" name="imageUrl" id="imageUrl"
                     class="<%= validationsErrorsArray.find(item => item.param === 'imageUrl') ? 'invalid': '' %>"
                     value="<% if (editing || hasError) { %><%= product.imageUrl %><% } %>">
-            </div> -->
+                </div> 
+            -->
 
             <div class="form-control">
                 <label for="image">Image</label>
-                <input 
-                    type="file" 
-                    name="image" 
-                    id="image" > 
+                <input type="file" name="image" id="image">
             </div>
 
             <div class="form-control">
                 <label for="price">Price</label>
-                <input 
-                    class="<%= validationsErrorsArray.find(item => item.param === 'price') ? 'invalid': '' %>"
-                    type="number" 
-                    name="price" 
-                    id="price" 
-                    step="0.01" 
+                <input class="<%= validationsErrorsArray.find(item => item.param === 'price') ? 'invalid': '' %>"
+                    type="number" name="price" id="price" step="0.01"
                     value="<% if (editing || hasError) { %><%= product.price %><% } %>">
             </div>
 
             <div class="form-control">
                 <label for="description">Description</label>
-                <textarea 
-                    class="<%= validationsErrorsArray.find(item => item.param === 'description') ? 'invalid': '' %>" 
-                    name="description" 
-                    id="description"                   
+                <textarea
+                    class="<%= validationsErrorsArray.find(item => item.param === 'description') ? 'invalid': '' %>"
+                    name="description" id="description"
                     rows="5"><% if (editing || hasError) { %><%= product.description %><% } %></textarea>
             </div>
 
@@ -62,7 +54,9 @@
             <% } %>
 
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add Product<% } %></button>
+            <button class="btn" type="submit"><% if (editing) { %>Update Product<% } else { %>Add
+                Product<% } %>
+            </button>
         </form>
     </main>
     <%- include('../includes/end.ejs') %>
