@@ -9,7 +9,8 @@ const isAuth = require("./middlewares/isAuth");
 const csrf = require("csurf");
 const User = require("./models/user");
 const flash = require("connect-flash");
-const multer = require("multer");
+// const multer = require("multer");
+const multer = require("./middlewares/multer-config");
 
 const app = express();
 
@@ -20,26 +21,26 @@ const store = new MongoDBStore({
 
 const csrfProtection = csrf({}); // creating the middleware protection
 
-const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/png"
-  ) {
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
+// const fileFilter = (req, file, cb) => {
+//   if (
+//     file.mimetype === "image/jpg" ||
+//     file.mimetype === "image/jpeg" ||
+//     file.mimetype === "image/png"
+//   ) {
+//     cb(null, true);
+//   } else {
+//     cb(null, false);
+//   }
+// };
 
-const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "images");
-  },
-  filename: (req, file, cb) => {
-    cb(null, "_" + Date.now() + "_" + file.originalname);
-  },
-});
+// const fileStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "images");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, "_" + Date.now() + "_" + file.originalname);
+//   },
+// });
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -49,7 +50,8 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
 app.use(express.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
+// app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
+app.use(multer);
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -62,7 +64,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
-  })
+  }),
 );
 
 app.use(csrfProtection); // using the middleware protection, must be placed after a session
@@ -119,7 +121,7 @@ mongoose
   .then(() => {
     console.log("Connected to MongoDB Database: success !");
     app.listen(3000, () =>
-      console.log("App is running on port http://localhost:3000/")
+      console.log("App is running on port http://localhost:3000/"),
     );
   })
   .catch((err) => console.log(err));
