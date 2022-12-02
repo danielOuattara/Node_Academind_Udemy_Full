@@ -4,7 +4,6 @@ const fs = require("fs");
 const path = require("path");
 
 const PDFDocument = require("pdfkit");
-
 const ITEMS_PER_PAGE = 1;
 
 //---------------------------------------------------------------
@@ -274,7 +273,7 @@ exports.getInvoice = (req, res, next) => {
       res.setHeader("Content-Type", "Application/pdf");
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=" + invoiceName
+        "attachment; filename=" + invoiceName,
       );
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
@@ -292,7 +291,7 @@ exports.getInvoice = (req, res, next) => {
       order.products.forEach((item) => {
         totalPrice += item.product.price * item.quantity;
         pdfDoc.text(
-          `${item.product.title}  - ${item.quantity} x ${item.product.price} Roubles  `
+          `${item.product.title}  - ${item.quantity} x ${item.product.price} Roubles  `,
         );
       });
 
