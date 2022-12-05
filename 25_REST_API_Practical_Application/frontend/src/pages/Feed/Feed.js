@@ -55,7 +55,7 @@ class Feed extends Component {
       this.setState({ postPage: page });
     }
     // n°1: complete url
-    fetch(`http://localhost:8080/api/v1/feed/posts?=${page}`, {
+    fetch(`http://localhost:8080/api/v1/feed/posts?page=${page}`, {
       headers: {
         Authorization: `Bearer ${this.props.token}`,
       },
@@ -67,6 +67,7 @@ class Feed extends Component {
         return res.json();
       })
       .then((resData) => {
+        console.log("resData ===", resData);
         this.setState({
           posts: resData.posts.map((item) => ({
             ...item,
@@ -167,7 +168,7 @@ class Feed extends Component {
           let updatedPosts = [...prevState.posts];
           if (prevState.editPost) {
             const postIndex = prevState.posts.findIndex(
-              (p) => p._id === prevState.editPost._id
+              (p) => p._id === prevState.editPost._id,
             );
             updatedPosts[postIndex] = post;
           } else if (prevState.posts.length < 2) {
@@ -213,9 +214,7 @@ class Feed extends Component {
       .then((resData) => {
         console.log(resData);
         this.setState((prevState) => {
-          const updatedPosts = prevState.posts.filter(
-            (p) => p._id !== postId
-          );
+          const updatedPosts = prevState.posts.filter((p) => p._id !== postId);
           return { posts: updatedPosts, postsLoading: false };
         });
       })
@@ -236,10 +235,7 @@ class Feed extends Component {
   render() {
     return (
       <Fragment>
-        <ErrorHandler
-          error={this.state.error}
-          onHandle={this.errorHandler}
-        />
+        <ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
         <FeedEdit
           editing={this.state.isEditing}
           selectedPost={this.state.editPost}
@@ -262,11 +258,7 @@ class Feed extends Component {
           </form>
         </section>
         <section className="feed__control">
-          <Button
-            mode="raised"
-            design="accent"
-            onClick={this.newPostHandler}
-          >
+          <Button mode="raised" design="accent" onClick={this.newPostHandler}>
             New Post
           </Button>
         </section>
@@ -291,16 +283,11 @@ class Feed extends Component {
                   key={post._id}
                   id={post._id}
                   author={post.creator.name}
-                  date={new Date(post.createdAt).toLocaleDateString(
-                    "en-US"
-                  )}
+                  date={new Date(post.createdAt).toLocaleDateString("en-US")}
                   title={post.title}
                   image={post.imageUrl}
                   content={post.content}
-                  onStartEdit={this.startEditPostHandler.bind(
-                    this,
-                    post._id
-                  )}
+                  onStartEdit={this.startEditPostHandler.bind(this, post._id)}
                   onDelete={this.deletePostHandler.bind(this, post._id)}
                 />
               ))}
