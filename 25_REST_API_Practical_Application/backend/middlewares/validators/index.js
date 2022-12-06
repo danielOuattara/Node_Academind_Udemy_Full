@@ -1,9 +1,11 @@
 const postValidation = require("./postValidation");
-const signUpValidate = require("./signUpValidations");
+const signUpValidation = require("./signUpValidations");
 const userStatusValidation = require("./userStatusValidation");
+const loginValidation = require("./loginValidation");
 
 module.exports = {
   postValidation,
-  signUpValidate,
+  signUpValidation,
+  loginValidation,
   userStatusValidation,
 };

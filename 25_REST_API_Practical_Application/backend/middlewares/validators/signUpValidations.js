@@ -1,11 +1,10 @@
 const { check, body } = require("express-validator");
 const User = require("./../../models/userModel");
 
-const signUpValidate = [
+const signUpValidation = [
   check("email")
     .isEmail()
     .withMessage("Email address is Invalid / Missing")
-    // .normalizeEmail()
     .custom((value, { req }) => {
       if (value === "test@test.com") {
         throw new Error("Some words are forbidden as email parts");
@@ -15,11 +14,12 @@ const signUpValidate = [
       return User.findOne({ email: req.body.email }).then((user) => {
         if (user) {
           return Promise.reject(
-            "E-Mail exists already, please pick a different one."
+            "E-Mail exists already, please pick a different one.",
           );
         }
       });
-    }),
+    })
+    .normalizeEmail(),
   body("password", "Please, enter a password at least 5 chars long")
     .trim()
     .isLength({
@@ -29,4 +29,4 @@ const signUpValidate = [
   body("name").trim().not().isEmpty(),
 ];
 
-module.exports = signUpValidate;
+module.exports = signUpValidation;

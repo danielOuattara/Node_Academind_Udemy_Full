@@ -1,7 +1,7 @@
 const { check, body } = require("express-validator");
-const User = require("./../../models/user");
+const User = require("./../../models/userModel");
 
-const loginValidate = [
+const loginValidation = [
   // SignUp
   check("email")
     .isEmail()
@@ -21,4 +21,4 @@ const loginValidate = [
     .trim(),
 ];
 
-module.exports = loginValidate;
+module.exports = loginValidation;

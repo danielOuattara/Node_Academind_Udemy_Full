@@ -6,9 +6,7 @@ const path = require("path");
 
 //-----------------------------------------------------------
 exports.getPosts = (req, res, next) => {
-  console.log(req.query.page);
   const currentPage = Number(req.query.page) || 1;
-  console.log("currentPage = ", currentPage);
   const perPage = 2;
   let totalItems;
 
@@ -67,7 +65,7 @@ exports.createPost = (req, res, next) => {
       user.posts.push(post);
       return user.save();
     })
-    .then((result) => {
+    .then(() => {
       res.status(201).json({
         message: "Post created successfully !",
         post,

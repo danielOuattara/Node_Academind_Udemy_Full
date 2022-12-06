@@ -2,7 +2,6 @@ const path = require("path");
 const fs = require("fs");
 const { validationResult } = require("express-validator");
 const User = require("./../models/userModel");
-const Post = require("./../models/postModel");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
