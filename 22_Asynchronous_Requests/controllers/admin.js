@@ -1,8 +1,8 @@
 const Product = require("./../models/product");
 const { validationResult } = require("express-validator");
 const deleteFile = require("./../util/file");
-const product = require("./../models/product");
 //---------------------------------------------------------------
+
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
@@ -123,7 +123,7 @@ exports.postEditProduct = (req, res, next) => {
   if (!req.file) {
     Product.findOneAndUpdate(
       { _id: req.body.productId, userId: req.user._id },
-      req.body
+      req.body,
     )
       .then(() => res.redirect("/admin/products"))
       .catch((err) => {

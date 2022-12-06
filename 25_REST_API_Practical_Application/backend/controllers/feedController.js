@@ -6,7 +6,9 @@ const path = require("path");
 
 //-----------------------------------------------------------
 exports.getPosts = (req, res, next) => {
+  console.log(req.query.page);
   const currentPage = Number(req.query.page) || 1;
+  console.log("currentPage = ", currentPage);
   const perPage = 2;
   let totalItems;
 
@@ -54,7 +56,8 @@ exports.createPost = (req, res, next) => {
     imageUrl,
     creator: req.userId,
   });
-  post.save()
+  post
+    .save()
     .then(() => {
       return User.findById(req.userId);
     })
@@ -183,11 +186,11 @@ exports.deletePost = (req, res, next) => {
       return User.findById(req.userId);
     })
     .then((user) => {
-      user.posts.pull(req.params.postId)
+      user.posts.pull(req.params.postId);
       return user.save();
     })
     .then(() =>
-      res.status(200).json({ message: "Post deleted successfully !" })
+      res.status(200).json({ message: "Post deleted successfully !" }),
     )
     .catch((error) => {
       if (!error.statusCode) {

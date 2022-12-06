@@ -20,13 +20,10 @@ exports.signUp = (req, res, next) => {
   bcryptjs
     .hash(password, 11)
     .then((hashedPassword) => {
-      console.log("Here");
       return User.create({ email, name, password: hashedPassword });
     })
     .then((user) =>
-      res
-        .status(201)
-        .json({ user, message: "user successfully created! " })
+      res.status(201).json({ user, message: "user successfully created! " }),
     )
     .catch((error) => {
       if (!error.statusCode) {
@@ -75,7 +72,7 @@ exports.login = (req, res, next) => {
           name: userOnLogin.name,
         },
         process.env.JWT_SECRET,
-        { expiresIn: "2h" }
+        { expiresIn: "2h" },
       );
       res.status(201).json({ token, userId: userOnLogin._id });
     })

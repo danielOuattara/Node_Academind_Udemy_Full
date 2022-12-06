@@ -7,11 +7,10 @@ const deleteOneProduct = (btn) => {
     method: "delete",
     headers: { "csrf-token": crsf },
   })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
+    // .then((response) => {
+    //   return response.json();
+    // })
+    .then(() => {
       itemElement.parentNode.removeChild(itemElement);
     })
     .catch((err) => console.log(err));

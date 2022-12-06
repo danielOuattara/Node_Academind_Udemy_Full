@@ -14,10 +14,10 @@
             <% }) %>
         </ul>
         <div class="centered">
-            <h2>Total: <%= totalAmount%></h2>
+            <h2>Total: <%= totalAmount%> €</h2>
         </div>
         <div class="centered">
-            <button id="order-btn" class="btn">Order</button>
+            <button id="order-btn" class="btn">Confirm Order</button>
             <script src="https://js.stripe.com/v3/"></script>
             <script>
                 var stripe = Stripe("<%= STRIPE_PUBLIC %>");

@@ -150,11 +150,12 @@ exports.postCartDeleteProduct = (req, res, next) => {
 exports.getCheckout = (req, res, next) => {
   let products;
   let totalAmount = 0;
-  req.user.populate("cart.items.productId")
+  req.user
+    .populate("cart.items.productId")
     .then((user) => {
       products = user.cart.items;
       products.forEach((item) => {
-        console.log(item);
+        // console.log(item);
         totalAmount += item.quantity * item.productId.price;
       });
 
@@ -177,7 +178,7 @@ exports.getCheckout = (req, res, next) => {
     .then((session) => {
       res.render("shop/checkout", {
         path: "/checkout",
-        pageTitle: "Your Cart",
+        pageTitle: "Checkout",
         products,
         totalAmount,
         sessionId: session.id,
@@ -356,7 +357,7 @@ exports.getInvoice = (req, res, next) => {
       res.setHeader("Content-Type", "Application/pdf");
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=" + invoiceName
+        "attachment; filename=" + invoiceName,
       );
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
@@ -374,7 +375,7 @@ exports.getInvoice = (req, res, next) => {
       order.products.forEach((item) => {
         totalPrice += item.product.price * item.quantity;
         pdfDoc.text(
-          `${item.product.title}  - ${item.quantity} x ${item.product.price} Roubles  `
+          `${item.product.title}  - ${item.quantity} x ${item.product.price} Roubles  `,
         );
       });
 

@@ -7,20 +7,14 @@ const isAuth = require("./../middlewares/isAuth.js");
 
 //--------------------------------------------------------------
 router.get("/posts", isAuth, feedController.getPosts);
-router.post(
-  "/post",
-  isAuth,
-  multer,
-  postValidation,
-  feedController.createPost
-);
+router.post("/post", isAuth, multer, postValidation, feedController.createPost);
 router.get("/post/:postId", isAuth, feedController.getOnePost);
 router.put(
   "/post/:postId",
   isAuth,
   multer,
   postValidation,
-  feedController.updatePost
+  feedController.updatePost,
 );
 router.delete("/post/:postId", isAuth, feedController.deletePost);
 
