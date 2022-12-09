@@ -40,7 +40,7 @@ class Feed extends Component {
 
     this.loadPosts();
 
-    // socket.io staffs here
+    // socket.io stuff here
     const socket = openSocket("http://localhost:8080");
     socket.on("posts", (data) => {
       if (data.action === "create") {
@@ -48,8 +48,8 @@ class Feed extends Component {
       } else if (data.action === "update") {
         this.updatePost(data.post);
       } else if (data.action === "delete") {
-        this.loadPosts();
         // this.deletePost(data.post);
+        this.loadPosts();
       }
     });
   }
@@ -60,9 +60,11 @@ class Feed extends Component {
       const updatedPosts = [...prevState.posts];
       if (prevState.postPage === 1 && prevState.posts.length >= 2) {
         updatedPosts.pop();
+        console.log("case 1 : ", updatedPosts);
       }
       if (prevState.postPage === 1) {
         updatedPosts.unshift(post);
+        console.log("case 2 : ", updatedPosts);
       }
       return {
         posts: updatedPosts,
@@ -76,7 +78,7 @@ class Feed extends Component {
     this.setState((prevState) => {
       const updatedPosts = [...prevState.posts];
       const updatedPostIndex = updatedPosts.findIndex(
-        (p) => p._id === post._id
+        (p) => p._id === post._id,
       );
       if (updatedPostIndex > -1) {
         updatedPosts[updatedPostIndex] = post;
@@ -85,7 +87,7 @@ class Feed extends Component {
     });
   };
 
-  // by me
+  // by me: defined, working but not used
   deletePost = (postId) => {
     this.setState((prevState) => {
       const updatedPosts = [...prevState.posts];
@@ -108,7 +110,7 @@ class Feed extends Component {
       this.setState({ postPage: page });
     }
     // n°1: complete url
-    fetch(`http://localhost:8080/api/v1/feed/posts?=${page}`, {
+    fetch(`http://localhost:8080/api/v1/feed/posts?page=${page}`, {
       headers: {
         Authorization: `Bearer ${this.props.token}`,
       },
@@ -257,7 +259,6 @@ class Feed extends Component {
         console.log(resData);
         // this.loadPosts();
         this.deletePost(resData);
-
       })
       .catch((err) => {
         console.log(err);
@@ -276,10 +277,7 @@ class Feed extends Component {
   render() {
     return (
       <Fragment>
-        <ErrorHandler
-          error={this.state.error}
-          onHandle={this.errorHandler}
-        />
+        <ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
         <FeedEdit
           editing={this.state.isEditing}
           selectedPost={this.state.editPost}
@@ -302,11 +300,7 @@ class Feed extends Component {
           </form>
         </section>
         <section className="feed__control">
-          <Button
-            mode="raised"
-            design="accent"
-            onClick={this.newPostHandler}
-          >
+          <Button mode="raised" design="accent" onClick={this.newPostHandler}>
             New Post
           </Button>
         </section>
@@ -331,16 +325,11 @@ class Feed extends Component {
                   key={post._id}
                   id={post._id}
                   author={post.creator.name}
-                  date={new Date(post.createdAt).toLocaleDateString(
-                    "en-US"
-                  )}
+                  date={new Date(post.createdAt).toLocaleDateString("en-US")}
                   title={post.title}
                   image={post.imageUrl}
                   content={post.content}
-                  onStartEdit={this.startEditPostHandler.bind(
-                    this,
-                    post._id
-                  )}
+                  onStartEdit={this.startEditPostHandler.bind(this, post._id)}
                   onDelete={this.deletePostHandler.bind(this, post._id)}
                 />
               ))}

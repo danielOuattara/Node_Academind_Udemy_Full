@@ -12,14 +12,8 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT,PATCH, DELETE"
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization"
-  );
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT,PATCH, DELETE");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
 
@@ -50,11 +44,11 @@ mongoose
   .then(() => {
     console.log("Connected to MongoDB Database: success !");
     const server = app.listen(8080, () =>
-      console.log(`App is running on port http://localhost:${8080}/`)
+      console.log(`App is running on port http://localhost:${8080}/`),
     );
 
-    //// npm install socket.io for backend + configure optionally here
-    //* Now app.js requestes 'io' from 'socket.io' and call init() function
+    /* npm install socket.io for backend + configure optionally here
+    Now app.js requests 'io' from 'socket.io' and call init() function */
 
     const io = require("./socket").init(server);
     // console.log("io = ", io);

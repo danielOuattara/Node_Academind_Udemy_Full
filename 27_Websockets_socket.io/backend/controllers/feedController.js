@@ -121,9 +121,7 @@ exports.updatePost = async (req, res, next) => {
       throw error;
     }
 
-    const post = await Post.findById(req.params.postId).populate(
-      "creator"
-    );
+    const post = await Post.findById(req.params.postId).populate("creator");
     if (!post) {
       const error = new Error("Post not Found");
       error.statusCode = 404;
@@ -190,7 +188,7 @@ exports.deletePost = async (req, res, next) => {
 
     io.getIO().emit("posts", {
       action: "delete",
-      post: req.params.postId
+      post: req.params.postId,
     });
 
     res.status(200).json({ message: "Post deleted successfully !" });
