@@ -14,27 +14,48 @@ class SinglePost extends Component {
 
   componentDidMount() {
     const postId = this.props.match.params.postId;
-    fetch(`http://localhost:8080/api/v1/feed/post/${postId}`, {
+    const graphqlQuery = {
+      query: `
+      query {
+        getOnePost(id: "${postId}") {
+          title
+          creator {
+            name
+          }
+          imageUrl
+          content
+          createdAt
+        }
+      }
+      `,
+    };
+    fetch(`http://localhost:8080/graphql`, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${this.props.token}`,
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status !== 200) {
-          throw new Error("Failed to fetch status");
-        }
         return res.json();
       })
       .then((resData) => {
-        console.log("resData = ", resData);
+        if (resData.errors && resData.errors[0].status === 400) {
+          throw new Error(resData.errors[0].error.message);
+        }
+        if (resData.errors) {
+          throw new Error("Error in creating new post!");
+        }
+
         this.setState({
-          title: resData.post.title,
-          author: resData.post.creator.name,
-          image: `http://localhost:8080/` + resData.post.imageUrl,
-          date: new Date(resData.post.createdAt).toLocaleDateString(
-            "en-US"
+          title: resData.data.getOnePost.title,
+          author: resData.data.getOnePost.creator.name,
+          image: `http://localhost:8080/` + resData.data.getOnePost.imageUrl,
+          date: new Date(resData.data.getOnePost.createdAt).toLocaleDateString(
+            "en-US",
           ),
-          content: resData.post.content,
+          content: resData.data.getOnePost.content,
         });
       })
       .catch((err) => {

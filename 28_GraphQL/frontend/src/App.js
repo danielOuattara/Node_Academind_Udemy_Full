@@ -64,36 +64,47 @@ class App extends Component {
   loginHandler = (event, authData) => {
     event.preventDefault();
     this.setState({ authLoading: true });
-    fetch("http://localhost:8080/api/v1/auth/login", {
+
+    const graphqlQuery = {
+      query: `
+        query {
+          login(
+            email: "${authData.email}", 
+            password: "${authData.password}"
+          ) {
+            userId
+            token
+          }
+        }`,
+    };
+
+    fetch("http://localhost:8080/graphql", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: authData.email,
-        password: authData.password,
-      }),
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status === 422) {
-          throw new Error("Validation failed.");
-        }
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Could not authenticate you!");
-        }
         return res.json();
       })
       .then((resData) => {
-        console.log(resData);
+        if (resData.errors && resData.errors[0].status === 400) {
+          throw new Error(resData.errors[0].error.message);
+        }
+        if (resData.errors) {
+          throw new Error("Could not authenticate you!");
+        }
+
         this.setState({
           isAuth: true,
-          token: resData.token,
+          token: resData.data.login.token,
           authLoading: false,
-          userId: resData.userId,
+          userId: resData.data.login.userId,
         });
-        localStorage.setItem("token", resData.token);
-        localStorage.setItem("userId", resData.userId);
+        localStorage.setItem("token", this.state.token);
+        localStorage.setItem("userId", this.state.userId);
         const remainingMilliseconds = 60 * 60 * 1000;
         const expiryDate = new Date(
-          new Date().getTime() + remainingMilliseconds
+          new Date().getTime() + remainingMilliseconds,
         );
         localStorage.setItem("expiryDate", expiryDate.toISOString());
         this.setAutoLogout(remainingMilliseconds);
@@ -110,30 +121,38 @@ class App extends Component {
 
   signupHandler = (event, authData) => {
     event.preventDefault();
-    console.log("authData = ", authData);
     this.setState({ authLoading: true });
-    fetch("http://localhost:8080/api/v1/auth/signup", {
-      method: "PUT",
+
+    const graphqlQuery = {
+      query: `
+        mutation {
+          createUser(userInput: {
+            email: "${authData.signupForm.email.value}", 
+            name: "${authData.signupForm.name.value}", 
+            password: "${authData.signupForm.password.value}"
+          }) {
+            _id
+            name
+          }
+        }`,
+    };
+    fetch("http://localhost:8080/graphql", {
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: authData.signupForm.email.value,
-        name: authData.signupForm.name.value,
-        password: authData.signupForm.password.value,
-      }),
+      body: JSON.stringify(graphqlQuery),
     })
       .then((res) => {
-        if (res.status === 422) {
-          throw new Error(
-            "Validation failed. Make sure the email address isn't used yet!"
-          );
-        }
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Creating a user failed!");
-        }
         return res.json();
       })
       .then((resData) => {
-        console.log(resData);
+        if (resData.errors && resData.errors[0].status === 400) {
+          throw new Error(resData.errors[0].error.message);
+        }
+        if (resData.errors) {
+          throw new Error(
+            "Validation failed. Make sure the email address isn't used yet!",
+          );
+        }
         this.setState({ isAuth: false, authLoading: false });
         this.props.history.replace("/");
       })
@@ -193,10 +212,7 @@ class App extends Component {
             path="/"
             exact
             render={(props) => (
-              <FeedPage
-                userId={this.state.userId}
-                token={this.state.token}
-              />
+              <FeedPage userId={this.state.userId} token={this.state.token} />
             )}
           />
           <Route
@@ -218,10 +234,7 @@ class App extends Component {
         {this.state.showBackdrop && (
           <Backdrop onClick={this.backdropClickHandler} />
         )}
-        <ErrorHandler
-          error={this.state.error}
-          onHandle={this.errorHandler}
-        />
+        <ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
         <Layout
           header={
             <Toolbar>

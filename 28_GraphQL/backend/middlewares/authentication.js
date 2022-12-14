@@ -3,9 +3,8 @@ const jwt = require("jsonwebtoken");
 module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
   if (!authHeader) {
-    const error = new Error("Authentication Failed !");
-    error.statusCode = 401;
-    throw error;
+    req.isAuthenticated = false;
+    return next();
   }
 
   const token = authHeader.split(" ")[1];
@@ -14,15 +13,14 @@ module.exports = (req, res, next) => {
   try {
     decodedToken = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
-    error.satusCode = 500;
-    throw error;
+    req.isAuthenticated = false;
+    return next();
   }
-
   if (!decodedToken) {
-    const error = new Error("Authentication Failed !");
-    error.statusCode = 401;
-    throw error;
+    req.isAuthenticated = false;
+    return next();
   }
   req.userId = decodedToken.userId;
+  req.isAuthenticated = true;
   next();
 };
