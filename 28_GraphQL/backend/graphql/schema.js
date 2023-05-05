@@ -32,7 +32,7 @@ const { buildSchema } = require("graphql");
 
 //----------------------------------------
 
-module.exports = buildSchema(`
+module.exports = buildSchema(`#graphql
 
 type Post {
     _id: ID!
@@ -90,7 +90,6 @@ type RootQuery {
     getUserStatus: String!
 
 }
-
 
 schema {
     query: RootQuery
