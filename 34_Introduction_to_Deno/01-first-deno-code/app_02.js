@@ -27,6 +27,7 @@
 ------------------*/
 
 const { writeFile } = require("fs").promises;
+// import { writeFile } from "node:fs/promises";
 
 const text = "This should be store in a file again";
 writeFile("test-nodejs.txt", text);

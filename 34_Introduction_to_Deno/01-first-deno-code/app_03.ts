@@ -17,7 +17,7 @@ written in a single call. */
 
 const encoder = new TextEncoder();
 const data = encoder.encode("Hello world");
-const file = await Deno.open("/foo/bar.txt", { write: true });
+const file = await Deno.open("./foo/bar.txt", { write: true });
 await Deno.write(file.rid, data); // 11
 Deno.close(file.rid);
 
