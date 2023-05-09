@@ -44,14 +44,45 @@ the logging behavior. */
 // @param - handler The handler for individual HTTP requests.
 // @param - options The options. See ServeInit documentation for details.
 
-import { serve } from "https://deno.land/std@0.165.0/http/server.ts";
+// import { serve } from "https://deno.land/std@0.165.0/http/server.ts";
+// serve(function (_req) {
+//   console.log("_req = ", _req);
+//   const response = new Response("<h1>Hello, world</h1>");
+//   console.log(response.body);
+//   console.log(response.headers);
+//   console.log(response.status);
+//   console.log(response.statusText);
+//   console.log(response.ok);
+//   return response;
+// });
+
+/* deno 1.33.2 
+-----------------------*/
+// import { serve } from "https://deno.land/std@0.186.0/http/server.ts";
+// serve((_req) => new Response("Hello, world"), { port: 8440 });
+
+//-----------------
+
+import { serve, Server } from "https://deno.land/std@0.186.0/http/server.ts";
+
 serve(function (_req) {
   console.log("_req = ", _req);
   const response = new Response("<h1>Hello, world</h1>");
-  console.log(response.body);
-  console.log(response.headers);
-  console.log(response.status);
-  console.log(response.statusText);
-  console.log(response.ok);
+  response.headers.set("Content-Type", "text/html");
+  console.log("response = ", response);
   return response;
 });
+
+//----------------------------------
+
+// import { serve } from "https://deno.land/std@0.186.0/http/server.ts";
+// serve(function (_req) {
+//   console.log("_req = ", _req);
+//   const response = new Response("<h1>Hello, world</h1>");
+//   console.log(response.body);
+//   console.log(response.headers);
+//   console.log(response.status);
+//   console.log(response.statusText);
+//   console.log(response.ok);
+//   return response;
+// });
