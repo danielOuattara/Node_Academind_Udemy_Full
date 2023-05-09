@@ -1,9 +1,27 @@
-import { Application } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+// import { Application } from "https://deno.land/x/oak@v12.4.0/mod.ts";
+
+// const app = new Application();
+
+// app.use((ctx) => {
+//   ctx.response.body = "Hello World !";
+// });
+
+// await app.listen({ port: 8000 });
+
+//-----------------------------------------------------------------------
+
+// import { Application } from "https://deno.land/x/oak@v12.4.0/mod.ts";
+import { Application } from "https://deno.land/x/oak/mod.ts";
+
+// deno run --reload app.ts
 
 const app = new Application();
 
 app.use((ctx) => {
-  ctx.response.body = "Hello World !";
+  ctx.response.body = "<h1>Hello World! </h1>";
+  ctx.response.headers.set("Content-Type", "text/html");
+
+  console.log("ctx = ", ctx);
 });
 
 await app.listen({ port: 8000 });
@@ -30,6 +48,7 @@ this will simply serve requests received on the application. */
 // import { Application, Router } from "https://deno.land/x/oak/mod.ts";
 
 // const router = new Router();
+
 // router.get("/", (ctx) => {
 //   ctx.response.body = `<!DOCTYPE html>
 //     <html>
