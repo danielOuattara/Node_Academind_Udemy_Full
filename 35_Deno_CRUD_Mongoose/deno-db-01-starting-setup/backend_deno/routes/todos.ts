@@ -11,13 +11,13 @@ interface Todo {
 //---------------------------------------------------------------
 router.get("/todos", async (ctx) => {
   const todos = await getDB().collection<Todo>("todos").find().toArray();
-  const tranformedTodos = todos.map((todo: Todo) => {
+  const transformedTodos = todos.map((todo: Todo) => {
     return {
       id: todo._id,
       text: todo.text,
     };
   });
-  ctx.response.body = { todos: tranformedTodos };
+  ctx.response.body = { todos: transformedTodos };
 });
 
 //---------------------------------------------------------------
